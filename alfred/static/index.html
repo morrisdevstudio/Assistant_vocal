@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark"><title>Alfred · Banc d’essai</title>
+  <link rel="stylesheet" href="/static/style.css?v=20261120-selecteur-piece"><script defer src="/static/navigation.js?v=20261104&v=20261113-opt"></script><script defer src="/static/app.js?v=20261113-opt"></script>
+  <script defer src="/static/internet-sources.js?v=20261116"></script>
+  <script type="module" src="/static/internet-panel.js?v=20261116"></script>
+  <script type="module" src="/static/voice-controller.js?v=20261122-dialogue"></script>
+  <script type="module" src="/static/terminal-panel.js?v=20261120-terminal-conversation"></script>
+  <script type="module" src="/static/wake-panel.js?v=20261113&v=20261113-opt"></script>
+  <script type="module" src="/static/ai-config.js?v=20261113-opt"></script>
+  <script type="module" src="/static/home-panel.js?v=20261121-deux-types-eclairage"></script>
+  <script type="module" src="/static/music-panel.js?v=20261113-opt"></script>
+  <script type="module" src="/static/shopping-panel.js?v=20261113-opt"></script>
+  <script type="module" src="/static/announcements-panel.js?v=20261113-opt"></script>
+  <script type="module" src="/static/profiles-panel.js?v=20261113-opt"></script>
+  <script type="module" src="/static/logs-panel.js?v=20261116"></script>
+</head>
+<body>
+  <a class="skip-link" href="#view-content">Aller au contenu</a>
+  <main>
+    <header><a class="brand" href="#voice" aria-label="Alfred, laboratoire vocal"><span class="monogram">A</span> ALFRED</a>
+      <span class="badge" id="health" role="status">Connexion…</span></header>
+    <div class="page-heading"><div><p class="eyebrow">LE BANC D’ESSAI</p><h1>Que voulez-vous tester ?</h1><p>Une fonction à la fois, tous les essais à portée de main.</p></div>
+      <div class="terminal-context"><label>Étage du navigateur<select id="floor" form="schedule-form" required><option value="">Choisir un étage</option><option value="rdc">Rez-de-chaussée</option><option value="etage1">Premier étage</option></select></label><p class="hint">Pour les commandes et sonneries par étage.</p></div>
+    </div>
+    <div class="app-layout">
+      <nav class="app-nav" aria-label="Fonctions d’Alfred">
+        <p class="eyebrow">TESTER ALFRED</p>
+        <a href="#voice" data-view-link="voice"><span aria-hidden="true">01</span>Voix & conversation</a>
+        <a href="#timers" data-view-link="timers"><span aria-hidden="true">02</span>Minuteurs & rappels</a>
+        <a href="#lights" data-view-link="lights"><span aria-hidden="true">03</span>Domotique</a>
+        <a href="#music" data-view-link="music"><span aria-hidden="true">04</span>Musique</a>
+        <a href="#shopping" data-view-link="shopping"><span aria-hidden="true">05</span>Courses</a>
+        <a href="#announcements" data-view-link="announcements"><span aria-hidden="true">06</span>Annonces</a>
+        <a href="#profiles" data-view-link="profiles"><span aria-hidden="true">07</span>Profils vocaux</a>
+        <a href="#settings" data-view-link="settings"><span aria-hidden="true">08</span>Connexion IA</a>
+        <a href="#logs" data-view-link="logs"><span aria-hidden="true">09</span>Logs</a>
+      </nav>
+      <div id="view-content" class="view-content" tabindex="-1">
+      <div id="logs" class="app-view" data-view="logs">
+        <section class="panel"><h2>Logs</h2>
+          <p>Historique local des échanges conservé sept jours. Les textes sont visibles depuis cette interface.</p>
+          <h3>Test guidé du réveil ESP32</h3>
+          <p id="log-terminal-status" role="status"></p>
+          <p>Au calme, carte fixe et micros dégagés : 5 appels à 50 cm, 10 à 1 m, 5 à 2 m et 5 à 3 m. Trente secondes de silence au début et à la fin. Pendant un test STT, les mots reconnus sont enregistrés dans les logs pour diagnostiquer les ratés.</p>
+          <label>Méthode<select id="log-engine"><option value="openwakeword">openWakeWord</option><option value="stt">STT · Parakeet</option></select></label>
+          <div id="log-oww"><label>Mot d'appel entraîné<select id="log-model"></select></label><label>Seuil<input type="number" id="log-threshold" min="0.01" max="0.99" step="0.01"></label></div>
+          <div id="log-stt" hidden><label>Mot d'appel<input id="log-phrase" maxlength="40"></label><label>Variantes séparées par des virgules<input id="log-variants" maxlength="360"></label></div>
+          <div class="voice-actions"><button id="log-save" type="button">Enregistrer les réglages</button><button id="log-start" type="button">Lancer le test</button><button id="log-stop" class="secondary" type="button" disabled>Arrêter le test</button></div>
+          <p id="log-test-status" role="status" aria-live="polite"></p>
+          <div class="voice-actions"><button id="log-ready" type="button" disabled>Je suis en place</button><button id="log-skip" type="button" disabled>Distance non réalisable</button><button id="log-missed" type="button" disabled>Je l’ai dit, non détecté</button><button id="log-retry" class="secondary" type="button" disabled>Recommencer cet essai</button></div>
+          <div id="log-results"></div><h3>Historique</h3>
+          <label>Afficher<select id="logs-filter"><option value="all">Tout</option><option value="exchange">Commandes</option><option value="wake">Réveils</option><option value="wake-test">Tests guidés</option></select></label>
+          <button id="logs-refresh" type="button">Actualiser</button><button id="logs-export" type="button" class="secondary">Exporter les résultats affichés</button>
+          <p id="logs-status" role="status"></p><div id="logs-list"></div>
+        </section>
+      </div>
+      <div id="voice" class="app-view" data-view="voice">
+    <section class="panel voice-panel" aria-labelledby="voice-heading">
+      <div class="panel-heading"><div><p class="eyebrow">LE LABORATOIRE VOCAL</p><h2 id="voice-heading">Parler à Alfred</h2></div><span class="badge" id="voice-models">Vérification des moteurs…</span></div>
+      <p class="voice-description">Choisissez le mode Conversation pour tester les commandes et le dialogue, ou Test audio pour vérifier le micro et la voix.</p>
+      <div class="voice-options">
+      <label class="voice-mode-label">Mode<select id="voice-mode"><option value="audio-test">Test audio · entièrement local</option><option value="conversation">Conversation · commandes et dialogue</option></select></label>
+      <label class="voice-choice">Voix française<select id="voice-choice" disabled><option value="phonon-dumby-cpu">Dumby · Phonon · CPU</option><option value="phonon-alfred-cpu">Alfred · Phonon · voix clonée</option><option value="phonon-arnaud-cpu">Phonon · Arnaud · CPU</option><option value="phonon-lucien-cpu">Phonon · Lucien · CPU</option></select></label>
+      </div>
+      <label class="auto-listen"><input type="checkbox" id="voice-auto" checked> Mode dialogue · 8 secondes quand Alfred attend une réponse</label>
+      <div class="voice-actions"><button type="button" id="voice-record" disabled>Parler au micro</button><button type="button" id="voice-cancel" class="secondary" disabled>Annuler / arrêter la lecture</button><button type="button" id="voice-sample" class="secondary" disabled>Écouter la voix française</button></div>
+      <form id="chat-form" class="chat-form"><label>Votre message<textarea id="chat-text" rows="2" maxlength="4000" required placeholder="Par exemple : mets un minuteur de huit minutes."></textarea></label><button type="submit" id="chat-send" disabled>Envoyer à Alfred</button><button type="button" class="secondary" id="chat-reset">Nouvelle conversation</button></form>
+      <p id="voice-feedback" role="status" aria-live="polite">Le micro reste fermé tant que vous ne cliquez pas sur « Parler au micro ».</p>
+      <div class="voice-actions"><button type="button" id="terminal-test" class="secondary" disabled>Écouter sur l’ESP32</button><button type="button" id="terminal-bell-test" class="secondary" disabled>Tester la sonnerie</button><button type="button" id="terminal-stt-test" class="secondary" disabled>Tester la transcription ESP32</button><button type="button" id="terminal-stt-distance" class="secondary" disabled>Tester à distance</button></div>
+      <p id="terminal-stt-result" class="hint" style="white-space: pre-line" role="status" aria-live="polite"></p>
+      <h3>Mot d’appel · Micro du navigateur</h3>
+      <p class="hint">Une seule source en veille à la fois. Activer ce micro suspend la veille ESP32. La page doit rester visible.</p>
+      <label>Moteur<select id="wake-browser-engine"><option value="stt">STT local · Parakeet</option><option value="openwakeword">openWakeWord</option></select></label>
+      <div id="wake-browser-stt"><label>Mot ou phrase d’appel<input id="wake-browser-phrase" maxlength="40" value="Alfy"></label><label>Variantes acceptées, séparées par des virgules<input id="wake-browser-variants" maxlength="360" value="Alfi"></label></div>
+      <div id="wake-browser-oww" hidden><label>Modèle entraîné<select id="wake-browser-model"></select></label><label>Seuil de détection<input id="wake-browser-threshold" type="number" min="0.01" max="0.99" step="0.01" value="0.5"></label></div>
+      <div class="voice-actions"><button type="button" id="wake-browser-save" class="secondary">Enregistrer</button><button type="button" id="wake-browser-start" class="secondary">Activer ce micro</button><button type="button" id="wake-browser-stop" class="secondary" disabled>Arrêter la veille</button></div>
+      <p id="wake-browser-feedback" class="hint" role="status" aria-live="polite">Veille fermée.</p>
+      <h3>Mot d’appel · ESP32</h3>
+      <p class="hint">La veille ESP32 fonctionne même avec cette page fermée et reprend après redémarrage du serveur. L’arrêter ou activer le micro navigateur désactive cette reprise. Ces réglages ne nécessitent pas de mise à jour de la carte.</p>
+      <label>Moteur<select id="wake-esp32-engine"><option value="openwakeword">openWakeWord</option><option value="stt">STT local · Parakeet</option></select></label>
+      <div id="wake-esp32-stt" hidden><label>Mot ou phrase d’appel<input id="wake-esp32-phrase" maxlength="40" value="Alfy"></label><label>Variantes acceptées, séparées par des virgules<input id="wake-esp32-variants" maxlength="360" value="Alfi"></label></div>
+      <div id="wake-esp32-oww"><label>Modèle entraîné<select id="wake-esp32-model"></select></label><label>Seuil de détection<input id="wake-esp32-threshold" type="number" min="0.01" max="0.99" step="0.01" value="0.5"></label></div>
+      <div class="voice-actions"><button type="button" id="wake-esp32-save" class="secondary">Enregistrer</button><button type="button" id="wake-start" class="secondary" disabled>Activer la veille ESP32</button><button type="button" id="wake-stop" class="secondary" disabled>Arrêter la veille</button><button type="button" id="wake-false-alarm" class="secondary" disabled>Faux réveil</button></div>
+      <p id="wake-esp32-feedback" class="hint" role="status" aria-live="polite"></p>
+      <p id="wake-status" class="hint" role="status" aria-live="polite">Veille inactive : le mot d’appel n’écoute pas.</p>
+      <details><summary>Importer un modèle openWakeWord</summary><p class="hint">Le modèle doit être entraîné pour le mot indiqué et compatible avec openWakeWord. Les modèles microWakeWord TFLite ne conviennent pas. Aucun entraînement n’est lancé ici.</p>
+      <form id="wake-model-import"><label>Nom du modèle<input id="wake-model-label" maxlength="40" required></label><label>Phrase réellement entraînée<input id="wake-model-phrase" maxlength="40" required></label><label>Fichier ONNX · dix Mo maximum<input id="wake-model-file" type="file" accept=".onnx" required></label><button id="wake-import-button" type="submit" class="secondary">Importer et vérifier</button></form><p id="wake-import-feedback" role="status" class="hint"></p></details>
+      <p class="hint">« Tester à distance » ouvre le micro de l’ESP32 depuis cette page, sans K2. Les tests de transcription n’exécutent aucune commande.</p>
+      <p id="terminal-status" class="hint" role="status">Vérification du terminal…</p>
+      <div class="voice-results">
+        <div><h3>Ce qu’Alfred a compris</h3><p id="voice-transcript">Votre transcription apparaîtra ici.</p><p class="hint" id="voice-identity"></p><p class="hint" id="voice-timings"></p></div>
+        <div><h3>La réponse d’Alfred</h3><p id="voice-answer">La réponse d’Alfred apparaîtra ici.</p><ul id="internet-sources" hidden aria-label="Sources de la réponse"></ul><audio id="voice-reply" controls hidden aria-label="Réponse vocale d’Alfred"></audio></div>
+      </div>
+      <details id="voice-preview-details" hidden><summary>Réécouter ma prise de son (en mémoire uniquement)</summary><audio id="voice-preview" controls aria-label="Enregistrement temporaire du micro"></audio></details>
+      <details class="usage-help"><summary>Aide et exemples de commandes</summary>
+      <p class="hint">En conversation commencée au micro, la phrase part après une seconde de silence et le micro se rouvre à la fin de la réponse. Un message écrit ou une simple réécoute n’ouvre pas automatiquement le micro.</p>
+      <p class="hint">Minuteurs : choisissez l’étage en haut de la page, puis dites « mets un minuteur de huit minutes », « quel temps reste-t-il sur le minuteur » ou « annule le minuteur œuf à la coque ». Sans nom, Alfred choisit la sonnerie active, sinon le minuteur le plus récent. Pendant une sonnerie, dites simplement « Alfredo » : la carte coupe le son localement. Musique : « mets Airbourne sur l’ampli », « pause la musique » ou « arrête la musique ».</p>
+      <p class="hint">30 secondes maximum par phrase · aucun fichier audio conservé. « Arrêter la conversation » ferme le micro. Détection locale par niveau sonore : bruit et musique peuvent déclencher une prise. Interruption pendant la réponse encore à venir.</p>
+      </details>
+    </section>
+      </div>
+      <div id="timers" class="app-view" data-view="timers">
+    <section class="workspace" aria-label="Minuteurs et rappels">
+      <div class="panel">
+        <p class="eyebrow">01 · PRÉPARER</p><h2>Une nouvelle échéance</h2>
+        <form id="schedule-form">
+          <label>Type<select id="kind"><option value="timer">Minuteur de test</option><option value="reminder">Rappel dans Home Assistant</option></select></label>
+          <label>Intitulé<input id="title" maxlength="160" required placeholder="Par exemple : cuisson des pâtes"></label>
+          <label id="duration-field">Durée en secondes<input id="duration" type="number" min="1" max="604800" value="30" required></label>
+          <label id="date-field" hidden>Date et heure sur ce PC<input id="due" type="datetime-local"></label>
+          <label id="room-field" hidden>Pièce de destination<input id="room" maxlength="80" placeholder="Par exemple : Bureau"></label>
+          <label id="audience-field" hidden>Rappel pour<select id="audience"><option value="personal">Une personne</option><option value="family">Toute la famille</option></select></label>
+          <label id="recurrence-field" hidden>Répétition<select id="recurrence"><option value="once">Une fois</option><option value="weekly">Chaque semaine, même jour et heure de Paris</option></select></label>
+          <label id="owner-field" hidden>Profil concerné<select id="owner"><option value="">Choisir un profil</option></select></label>
+          <button type="submit" id="submit">Créer le minuteur</button>
+          <p class="hint">Les rappels sont inscrits dans les calendriers Home Assistant et annoncés dans la pièce choisie. L'accès à l'interface n'est pas encore protégé par profil.</p>
+        </form>
+        <p id="feedback" role="status" aria-live="polite"></p>
+      </div>
+      <div class="panel timeline">
+        <div class="panel-heading"><div><p class="eyebrow">02 · SUIVRE</p><h2>Minuteurs & rappels</h2></div><span class="counter" id="count">0</span></div>
+        <div id="items" aria-live="off"><p class="empty">Chargement des échéances…</p></div>
+        <p id="calendar-reminder-status" role="status"></p>
+        <button id="stop" class="secondary" type="button">Stop · sonneries de cet étage</button>
+        <p class="hint">Le bouton arrête les minuteurs à échéance de l’étage sélectionné et demande l’arrêt aux terminaux configurés. Le statut indique si une sonnerie a été demandée.</p>
+      </div>
+    </section>
+<details class="usage-help"><summary>Fonctionnement des échéances</summary>
+    <section class="rules"><h2>Les règles déjà en place</h2><div class="rule-grid">
+      <article><span>01</span><h3>Chaque étage à son rythme</h3><p>« Stop » coupe les sonneries de l’étage choisi. Pendant que l’ESP32 sonne, la phrase « Alfredo » seule coupe le son.</p></article>
+      <article><span>02</span><h3>Une reprise discrète</h3><p>Après un arrêt, les échéances passées ne déclenchent aucune sonnerie tardive.</p></article>
+      <article><span>03</span><h3>Des rappels qui restent visibles</h3><p>Un rappel manqué reste consultable. Les échéances futures sont conservées.</p></article>
+    </div></section>
+</details>
+      </div>
+      <div id="lights" class="app-view" data-view="lights">
+    <section class="panel home-panel" aria-labelledby="home-heading">
+      <div class="panel-heading"><div><p class="eyebrow">LA MAISON</p><h2 id="home-heading">Domotique</h2></div><span class="badge" id="home-state">Vérification…</span></div>
+      <p class="voice-description">Lumières, températures, interrupteurs, helpers, lecteurs multimédias et aspirateurs : les commandes simples sont exécutées directement, sans passer par l’IA. Seules les entités exposées à Assist et autorisées dans Alfred sont accessibles.</p>
+      <details id="home-settings"><summary>Configurer Home Assistant</summary>
+        <form id="home-config-form" class="ai-form" autocomplete="off">
+          <label>Adresse de Home Assistant<input id="home-url" maxlength="200" placeholder="http://homeassistant.local:8123" spellcheck="false" required></label>
+          <label>Jeton d’accès longue durée<input id="home-token" type="password" maxlength="512" autocomplete="off" placeholder="Créé dans votre profil Home Assistant"></label>
+          <label>Pièce de ce terminal<input id="home-room" maxlength="60" value="Bureau" required></label>
+          <button type="submit" id="home-save">Enregistrer localement</button>
+        </form>
+        <p class="hint" id="home-storage">Le jeton reste côté serveur et n’est jamais renvoyé par l’API.</p>
+      </details>
+      <div class="voice-actions"><button type="button" class="secondary" id="home-check" disabled>Tester la connexion</button><button type="button" class="secondary" id="home-off-all" disabled>Éteindre toutes les lumières</button><button type="button" class="secondary" id="home-off-room" disabled>Éteindre cette pièce</button></div>
+      <form id="home-command-form" class="chat-form"><label>Demande domotique<textarea id="home-text" rows="1" maxlength="4000" placeholder="Par exemple : quelle température dans le salon ?"></textarea></label><button type="submit" id="home-send" disabled>Exécuter</button></form>
+      <p id="home-feedback" role="status" aria-live="polite"></p>
+      <div id="home-confirmation" class="home-confirmation" role="alert" hidden>
+        <p id="home-confirmation-text"></p>
+        <div class="voice-actions"><button type="button" id="home-confirmation-yes">Confirmer</button><button type="button" class="secondary" id="home-confirmation-no">Annuler</button></div>
+      </div>
+      <section aria-label="Entités accessibles"><h3>Appareils accessibles à Alfred</h3>
+        <div class="voice-actions"><button type="button" id="home-catalog-refresh">Actualiser</button></div>
+        <label>Rechercher<input id="home-catalog-search" type="search"></label>
+        <label>Pièce<select id="home-catalog-area"><option value="">Toutes les pièces</option></select></label>
+        <label>Type<select id="home-catalog-domain"><option value="">Tous les types</option></select></label>
+        <p id="home-catalog-feedback" role="status"></p><div id="home-catalog-list"></div>
+        <dialog id="home-device-editor" aria-labelledby="home-device-editor-title">
+          <h3 id="home-device-editor-title"></h3>
+          <form id="home-device-editor-form">
+            <fieldset id="home-device-editor-fields">
+              <label>Nom pour Alfred<input id="home-device-name" type="text" maxlength="80"></label>
+              <small id="home-device-original-name"></small>
+              <label>Pièce pour Alfred
+                <span class="device-room-field">
+                  <select id="home-device-room" aria-describedby="home-device-original-room"></select>
+                  <span id="home-device-room-icon" title="Pièce définie dans Home Assistant" aria-hidden="true" hidden>⌂</span>
+                </span>
+              </label>
+              <span id="home-device-original-room" hidden></span>
+              <label id="home-device-light-type-field" hidden>Type d’éclairage
+                <select id="home-device-light-type">
+                  <option value="main">Principal</option>
+                  <option value="secondary">Secondaire</option>
+                </select>
+              </label>
+              <label class="catalog-check"><input id="home-device-allowed" type="checkbox">Autoriser l’accès dans Alfred</label>
+              <label class="catalog-check"><input id="home-device-confirmation" type="checkbox">Demander confirmation avant de modifier l’appareil</label>
+              <label>Alias Alfred<input id="home-device-aliases" type="text"></label>
+              <small>Séparez les alias par des virgules.</small>
+              <small id="home-device-original-aliases"></small>
+            </fieldset>
+            <p id="home-device-editor-error" role="alert" class="error" hidden></p>
+            <div class="voice-actions">
+              <button id="home-device-cancel" class="secondary" type="button">Annuler</button>
+              <button id="home-device-submit" type="submit">Valider</button>
+            </div>
+          </form>
+        </dialog>
+      </section>
+      <p class="hint">« Éteins la lumière » et « Quelle température ici ? » visent la pièce du terminal ; « toutes les lumières » vise la maison. Exemples avec vos noms : « Active mode vacances », « Règle réveil à sept heures trente », « Mets télé en pause », « Règle le volume de télé à trente pour cent », « Liste les sources de ampli », « Démarre l'aspirateur », « Renvoie l'aspirateur à sa base ». « Nettoie le salon » nécessite l'association de cette pièce à la carte du robot dans Home Assistant. Les thermostats restent différés.</p>
+    </section>
+      </div>
+      <div id="music" class="app-view" data-view="music">
+    <section class="panel" aria-labelledby="music-heading">
+      <div class="panel-heading"><div><p class="eyebrow">LA MAISON</p><h2 id="music-heading">Musique</h2></div><span class="badge" id="music-state">Chargement…</span></div>
+      <p>Music Assistant lit la musique au moyen du lecteur choisi dans Home Assistant. Le choix reste propre à Alfred.</p>
+      <details><summary>Lecteur et volume pendant les réponses</summary>
+      <form id="music-config" class="ai-form"><label>Lecteur musical<select id="music-player" required><option value="">Chargement des lecteurs…</option></select></label><label>Playlist par défaut<input id="music-playlist-search" type="search" placeholder="Rechercher une playlist…" autocomplete="off"><select id="music-playlist"><option value="">Aucune playlist par défaut</option></select></label><label>Volume de la musique pendant une réponse (%)<input id="music-duck-percent" type="number" min="5" max="80" value="25" required></label><button type="submit" id="music-save">Enregistrer</button></form>
+      </details>
+      <p class="hint" id="music-player-status"></p>
+      <form id="music-play" class="chat-form">
+        <label>Artiste, album, titre, playlist ou radio<input id="music-query" maxlength="160" required placeholder="Par exemple : Airbourne"></label>
+        <label>Type<select id="music-type"><option value="artist">Artiste</option><option value="album">Album</option><option value="track">Titre</option><option value="playlist">Playlist</option><option value="radio">Radio</option></select></label>
+        <button type="submit" id="music-play-button">Lancer la lecture</button>
+      </form>
+      <div class="voice-actions"><button type="button" class="secondary" data-music-control="pause">Pause</button><button type="button" class="secondary" data-music-control="resume">Reprendre</button><button type="button" class="secondary" data-music-control="stop">Arrêter</button><button type="button" class="secondary" data-music-control="next">Suivant</button><button type="button" class="secondary" data-music-control="previous">Précédent</button></div>
+      <p id="music-feedback" role="status" aria-live="polite"></p>
+      <p class="hint">La musique est réduite au pourcentage choisi pendant l’écoute et les réponses d’Alfred, puis rétablie après la lecture. Un changement manuel du volume est conservé. La confirmation ne prouve pas que le son a été entendu.</p>
+    </section>
+      </div>
+      <div id="shopping" class="app-view" data-view="shopping">
+    <section class="panel" aria-labelledby="shopping-heading">
+      <div class="panel-heading"><div><p class="eyebrow">LA MAISON</p><h2 id="shopping-heading">Courses familiales</h2></div></div>
+      <p>La liste est conservée dans Home Assistant. Choisissez l'identifiant de la nouvelle liste familiale.</p>
+      <details><summary>Configurer la liste Home Assistant</summary>
+      <form id="shopping-config" class="chat-form"><label>Identifiant de la liste Home Assistant<input id="shopping-entity" placeholder="todo.identifiant_de_la_liste" required pattern="todo\.[a-z0-9_]+"></label><button>Enregistrer</button></form>
+      </details>
+      <form id="shopping-add" class="chat-form"><label>Article<input id="shopping-item" maxlength="120" required></label><button>Ajouter</button></form>
+      <button id="shopping-refresh" type="button" class="secondary">Afficher la liste</button>
+      <button id="shopping-purge" type="button" class="secondary">Purger toute la liste</button>
+      <p id="shopping-feedback" role="status" aria-live="polite"></p><ul id="shopping-items"></ul>
+      <details><summary>Articles cochés</summary><ul id="shopping-completed"></ul></details>
+    </section>
+      </div>
+      <div id="announcements" class="app-view" data-view="announcements">
+    <section class="panel" aria-labelledby="announcement-heading">
+      <div class="panel-heading"><div><p class="eyebrow">DANS LA MAISON</p><h2 id="announcement-heading">Faire une annonce</h2></div></div>
+      <form id="announcement-form" class="ai-form">
+        <label>Message<input id="announcement-message" maxlength="300" required></label>
+        <label>Destination<select id="announcement-scope"><option value="house">Toute la maison</option><option value="floor">Un étage</option><option value="room">Une pièce</option></select></label>
+        <label id="announcement-floor-field" hidden>Étage<select id="announcement-floor"><option value="rdc">Rez-de-chaussée</option><option value="etage1">Premier étage</option></select></label>
+        <label id="announcement-room-field" hidden>Pièce<input id="announcement-room" maxlength="80" placeholder="Par exemple : Bureau"></label>
+        <button type="submit">Faire l'annonce</button>
+      </form>
+      <p id="announcement-feedback" role="status" aria-live="polite"></p>
+      <p class="hint">La diffusion est demandée aux terminaux Alfred configurés. L'acceptation ne garantit pas que le son a été entendu.</p>
+    </section>
+      </div>
+      <div id="profiles" class="app-view" data-view="profiles">
+    <section class="panel profiles-panel" aria-labelledby="profiles-heading">
+      <div class="panel-heading"><div><p class="eyebrow">LES PROFILS</p><h2 id="profiles-heading">Reconnaître chacun</h2></div><span class="badge" id="profiles-state">Chargement…</span></div>
+      <p class="voice-description">Créez un profil par personne, puis enregistrez trois phrases deux fois. L’audio et les empreintes restent sur ce PC ; rien n’est envoyé à Command Code.</p>
+      <div id="profiles-list" class="profiles-list"><p class="empty">Chargement des profils…</p></div>
+      <div class="voice-actions"><button type="button" id="identity-calibrate" class="secondary">Calibrer les voix</button></div>
+      <p id="identity-state" class="hint" role="status"></p>
+      <details id="profile-create-details"><summary>Ajouter un profil</summary>
+        <form id="profile-form" class="ai-form" autocomplete="off">
+          <label>Prénom<input id="profile-name" maxlength="40" required placeholder="Camille"></label>
+          <label>Rôle<select id="profile-role"><option value="adult">Adulte</option><option value="child">Enfant</option></select></label>
+          <button type="submit">Créer le profil</button>
+        </form>
+      </details>
+      <div id="enrollment" class="enrollment" hidden>
+        <h3 id="enrollment-name"></h3>
+        <p class="hint" id="enrollment-phrase"></p>
+        <p class="enrollment-text" id="enrollment-text"></p>
+        <p class="hint" id="enrollment-progress"></p>
+        <div class="voice-actions"><button type="button" id="enroll-record">Enregistrer ce passage</button><button type="button" class="secondary" id="enroll-cancel">Fermer</button></div>
+        <p class="hint" id="enroll-timer" aria-live="off"></p>
+      </div>
+      <audio id="profile-preview" controls hidden aria-label="Réécoute d’un échantillon du profil"></audio>
+      <p id="profiles-feedback" role="status" aria-live="polite"></p>
+      <p class="hint">Six passages par personne, puis deux essais indépendants pour chaque profil. Au moins deux voix différentes sont nécessaires. Ce réglage expérimental ne constitue pas une authentification.</p>
+    </section>
+      </div>
+      <div id="settings" class="app-view" data-view="settings">
+    <section class="panel" aria-labelledby="internet-heading">
+      <div class="panel-heading"><h2 id="internet-heading">Internet et météo</h2><span class="badge" id="internet-state">Vérification…</span></div>
+      <p>Actualités et recherche avec Tavily. Météo personnelle via <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>, sans clé. Les réponses et leurs sources apparaissent dans le laboratoire vocal.</p>
+      <p id="internet-location">Aucune commune enregistrée.</p>
+      <form id="internet-location-form"><label>Rechercher une commune<input id="internet-city" minlength="2" maxlength="160" required placeholder="Commune, région ou pays"></label><button type="submit">Rechercher la commune</button></form>
+      <form id="internet-config-form" autocomplete="off">
+        <label>Commune météo<select id="internet-locations"><option value="">Conserver la commune actuelle</option></select></label>
+        <label><input id="internet-clear-location" type="checkbox">Effacer la commune enregistrée</label>
+        <label>Clé API Tavily<input id="internet-key" type="password" maxlength="512" autocomplete="off" placeholder="Saisir ici, jamais dans le chat"></label>
+        <label>Plafond mensuel gratuit de recherche<input id="internet-limit" type="number" min="0" max="1000" step="1" value="1000" required></label>
+        <button id="internet-save" type="submit">Enregistrer localement</button>
+      </form>
+      <p class="hint">Créez au besoin un compte sur <a href="https://www.tavily.com/" target="_blank" rel="noopener noreferrer">Tavily</a>, sans activer la facturation payante. Mille crédits gratuits par mois, partagés avec vos autres usages du compte. Chaque tentative est comptée localement, même si la réponse est perdue. La synthèse utilise aussi votre quota Command Code.</p>
+      <p id="internet-usage"></p><p id="internet-storage" class="hint"></p>
+      <button id="internet-check" type="button" class="secondary">Tester la recherche · un crédit</button>
+      <p id="internet-feedback" role="status" aria-live="polite"></p>
+    </section>
+    <section class="panel ai-panel" aria-labelledby="ai-heading">
+      <div class="panel-heading"><div><p class="eyebrow">LE CERVEAU D’ALFRED</p><h2 id="ai-heading">Command Code</h2></div><span class="badge" id="ai-state">Vérification…</span></div>
+      <p class="voice-description">Utilisez votre clé API GOAT dans ce formulaire local. Les demandes utilisent les quotas de votre abonnement existant, partagés avec vos autres usages. Aucun achat ou modèle de secours automatique.</p>
+      <details id="ai-settings"><summary>Configurer la connexion</summary>
+        <form id="ai-config-form" class="ai-form" autocomplete="off">
+          <label>Clé API Command Code<input id="ai-key" type="password" maxlength="512" autocomplete="off" placeholder="Saisir ici, jamais dans le chat"></label>
+          <label>Identifiant du modèle<input id="ai-model" maxlength="160" required value="deepseek/deepseek-v4-flash" spellcheck="false"></label>
+          <button type="submit" id="ai-save">Enregistrer localement</button>
+        </form>
+        <p class="hint" id="ai-storage">La clé reste côté serveur et n’est jamais renvoyée par l’API.</p>
+      </details>
+      <div class="voice-actions"><button type="button" class="secondary" id="ai-check" disabled>Tester l’accès · petite requête</button></div>
+      <p id="ai-feedback" role="status" aria-live="polite"></p>
+    </section>
+      </div>
+      </div>
+    </div>
+    <footer><span>ALFRED · <span id="version">0.6.0</span></span><span>Voix locale · Home Assistant · Command Code</span></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Base identique à la version installée ; aucun secret Wi-Fi dans ce fichier.
+packages:
+  waveshare: github://jyoushiki/esphome-waveshare-esp32-s3-audio-va/waveshare-va.yaml@c86ecd3c5124db85181c03ad35aec6578b82b849
+
+esphome:
+  build_path: ../.local/esp32-build
+
+esp32:
+  framework:
+    version: 5.5.5
+

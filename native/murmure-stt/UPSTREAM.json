@@ -1,0 +1,27 @@
+{
+  "repository": "https://github.com/Kieirra/murmure",
+  "version": "1.11.3",
+  "revision": "7c10b78c2284aad37c815ba1d216c95ebd0ee47c",
+  "license": "AGPL-3.0-or-later",
+  "verbatim_sha256": {
+    "src/engine/boost_tree.rs": "56b6d329d21e201fe1e2a4ffafab9d4f9fcfd7ad4c0669cd009d77b952cb9477",
+    "src/engine/engine.rs": "7de457c5fff240de49191ddffd90c8d7ec42461ff4ecd389fa929c824797fe06",
+    "src/engine/helpers.rs": "df67bd42b165da88a30ae67d2ce977014c6d9c0b11c463de34de1c639d70e632",
+    "src/engine/mod.rs": "d7c08011620163f5cb84c238b27d8bd720d2fad0995c731bb0834c78003ee750",
+    "src/engine/transcription_engine.rs": "f9939ef6ace4a6c67212286d1eba15450a876c5a70cb7474353ca2074297b1f1",
+    "src/engine/types.rs": "143c6dac7526dd5f37ae292169d6afeb7d4cda2a96aaef68aabaacc6dee7c2ee",
+    "src/formatting_rules/formatter.rs": "f1535426647d0668f09a758ed8e617145ca73c1e28125a5230b07389eb55be95",
+    "src/formatting_rules/helpers.rs": "738500658ecdd895a1cf05cee7a98a99871b524ad07a551bd7ee613e0bf69c2c",
+    "src/formatting_rules/types.rs": "7d920b54a02bffb1094c01d7ccfcc1011a73b5b929dde15bda24fea1388fe421",
+    "src/dictionary.rs": "f7f87d2a6696fd47fa3b252875b9bd7d1871b62cf782a46c91b2c07f3523d85b",
+    "src/vad.rs": "89f8a4469865a0de564ad26b75d4b7fc00efaa30bcf574e1b19c90ed53ee2dbb"
+  },
+  "adapted": [
+    "src/clean.rs: pure filler/repetition functions only",
+    "src/pipeline.rs: bounded 30-second headless chunking from audio/chunking.rs and pipeline.rs"
+  ],
+  "other_verbatim": [
+    "src/dictionary.rs: dictionary/dictionary.rs",
+    "src/vad.rs: audio/vad.rs"
+  ]
+}

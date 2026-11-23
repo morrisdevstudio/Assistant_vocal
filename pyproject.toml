@@ -1,0 +1,18 @@
+[project]
+name = "alfred-home"
+version = "0.6.0"
+description = "Socle local de l'assistant Alfred"
+requires-python = ">=3.12"
+dependencies = ["fastapi==0.162.0", "uvicorn==0.54.0", "httpx==0.28.1", "tzdata==2026.4", "websockets==17.3"]
+
+[project.optional-dependencies]
+test = ["httpx==0.28.1", "pytest==9.1.1"]
+voice = ["av==19.0.2", "numpy==2.5.4", "onnxruntime==1.31.0"]
+phonon = ["ptts==0.7.0"]
+terminal = ["aioesphomeapi==46.25.1", "soundfile==0.14.0", "scipy==1.18.1"]
+wakeword = ["openwakeword==0.6.0"]
+speaker = ["speechbrain==1.1.2", "torch==2.14.1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

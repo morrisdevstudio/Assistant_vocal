@@ -1,0 +1,25 @@
+[package]
+name = "alfred-murmure-stt"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Moteur autonome Alfred issu de Murmure 1.11.3, sans Tauri ni réseau"
+
+[dependencies]
+ort = { version = "=2.0.0-rc.10", features = ["download-binaries"] }
+ndarray = "=0.16.1"
+tokenizers = { version = "=0.23.1", default-features = false, features = ["fancy-regex"] }
+regex = "=1.12.2"
+text2num = "=2.6.5"
+thiserror = "=2.0.18"
+serde = { version = "=1.0.228", features = ["derive"] }
+serde_json = "=1.0.149"
+once_cell = "=1.21.3"
+log = "=0.4.29"
+strsim = "=0.11.1"
+base64 = "=0.22.1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
