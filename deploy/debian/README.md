@@ -39,8 +39,11 @@ systemctl --user enable --now alfred-dev.service
 curl -k https://<IP_VM>:8765/health
 ```
 
-La VM doit exposer AVX/AVX2 (type de CPU Proxmox `host`). Sans cela, `ptts` et
-les moteurs vocaux échouent. Les secrets DPAPI ne sont pas copiés ; les ressaisir
+Le wheel `ptts` 0.7.0 exige AVX/AVX2. Sur un invité sans AVX, le reconstruire
+depuis les sources :
+`pip install --no-binary ptts --force-reinstall --no-deps ptts==0.7.0`.
+Le type de CPU Proxmox `host` reste recommandé pour le wheel officiel et la
+performance. Les secrets DPAPI ne sont pas copiés ; les ressaisir
 dans l’interface. `openwakeword` n’est pas installé : le réveil utilisé est celui
 de Parakeet.
 

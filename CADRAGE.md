@@ -704,7 +704,9 @@ retenus pour la première version ; les rappels restent liés aux dates du calen
 - 27 novembre : VM Debian de dev créée sur l’AuBox, Debian 13.8 amd64, 4 vCPU,
   7,8 Gio de RAM, disque de 75 Gio, IP LAN 192.168.1.71, fuseau Europe/Paris.
   Le CPU invité est encore exposé en « QEMU Virtual CPU 2.5+ » sans AVX/AVX2 ;
-  le type Proxmox doit passer à `host` avant toute validation vocale. Le dépôt,
+  `ptts` 0.7.0 a été reconstruit localement pour cette VM, et Phonon fonctionne.
+  Le type Proxmox `host` reste recommandé pour le wheel officiel et la performance.
+  Le dépôt,
   les modèles utiles et les données ont été préparés ; le raccordement HA/ESP32
   et les mesures restent à valider. Cette VM est l’instance de dev active ; la
   future prod reste distincte.

@@ -581,7 +581,9 @@ techniques. Une tâche dans cette liste ne vaut pas validation de ses choix ouve
   27 novembre, VM de dev créée et mesurée : Debian 13.8 amd64, 4 vCPU, 7,8 Gio
   de RAM, disque de 75 Gio dont 64 Gio libres, IP 192.168.1.71, fuseau Europe/Paris.
   Le processeur invité est encore exposé comme « QEMU Virtual CPU 2.5+ » sans AVX ;
-  passer le type de CPU Proxmox à `host` et redémarrer avant de valider Phonon.
+  `ptts` 0.7.0 a été reconstruit localement pour cette VM et Phonon fonctionne.
+  Passer le type de CPU Proxmox à `host` reste recommandé pour le wheel officiel
+  et la performance.
   Le reste du dimensionnement et les mesures de latence restent ouverts.
 - [ ] **P05 — Définir les critères d'acceptation.** Fixer latence, succès des commandes,
   faux réveils, reconnaissance des personnes et concurrence entre terminaux ; séparer
@@ -2481,9 +2483,10 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   `/home/morris-dev/Assistant_vocal`, venv Python 3.13, Node 24.22 et Rust 1.100
   installés en espace utilisateur, worker Parakeet Linux compilé, UI construite,
   données et modèles restaurés, certificat HTTPS régénéré pour `192.168.1.71` et
-  service utilisateur `alfred-dev.service` démarré. `/health` répond ; la voix
-  Phonon reste indisponible tant que la VM n’expose pas AVX/AVX2. Le terminal
-  ESP32 est hors ligne et les trois secrets DPAPI restent à ressaisir.
+  service utilisateur `alfred-dev.service` démarré. `/health` répond, Parakeet
+  transcrit et Phonon synthétise après reconstruction locale de `ptts` 0.7.0
+  (le wheel officiel exige AVX). Le terminal ESP32 est hors ligne et les trois
+  secrets DPAPI restent à ressaisir.
 - [ ] **A03 — Prévoir et vérifier sauvegarde/restauration.** Configuration, mémoires,
   profils et échéances ; procédure de mise à jour/retour arrière. Essai de restauration
   distinct de la production. **Dépend de : A02, I04, F06, F07.**

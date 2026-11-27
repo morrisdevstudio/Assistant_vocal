@@ -1,4 +1,5 @@
 import json
+import os
 import threading
 
 import httpx
@@ -108,7 +109,10 @@ def test_token_is_encrypted_and_never_public(tmp_path):
     store.save(URL, TOKEN, "Bureau")
     assert store.values() == (URL, TOKEN, "Bureau")
     assert TOKEN not in json.dumps(store.public())
-    assert TOKEN.encode() not in store.path.read_bytes()
+    if os.name == "nt":
+        assert TOKEN.encode() not in store.path.read_bytes()
+    else:
+        assert store.path.stat().st_mode & 0o077 == 0
     with pytest.raises(ConfigurationError):
         store.save(URL, "", "Bureau")
 
