@@ -701,6 +701,13 @@ retenus pour la première version ; les rappels restent liés aux dates du calen
   l’hypothèse de la VM Alfred sur le Pentium G7400 ; le serveur existant n’est pas
   pour autant déclaré migré. Pas d’accès AMD à présumer dans la VM : passthrough
   et compatibilité du moteur à vérifier. CUDA/DirectML Windows ne sont pas la cible.
+- 27 novembre : VM Debian de dev créée sur l’AuBox, Debian 13.8 amd64, 4 vCPU,
+  7,8 Gio de RAM, disque de 75 Gio, IP LAN 192.168.1.71, fuseau Europe/Paris.
+  Le CPU invité est encore exposé en « QEMU Virtual CPU 2.5+ » sans AVX/AVX2 ;
+  le type Proxmox doit passer à `host` avant toute validation vocale. Le dépôt,
+  les modèles utiles et les données ont été préparés ; le raccordement HA/ESP32
+  et les mesures restent à valider. Cette VM est l’instance de dev active ; la
+  future prod reste distincte.
 
 Informations reprises le 26 octobre du document `docs/inventory.md` du projet
 `D:\App en dev\Serveur`, fondées sur ses relevés des 23 et 24 octobre ; aucune

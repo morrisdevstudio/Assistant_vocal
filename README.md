@@ -48,6 +48,18 @@ L’installeur sauvegarde les données avant la bascule, conserve les réglages 
 les modèles, puis contrôle le redémarrage du service.
 [Guide d’installation et de configuration Debian](https://github.com/morrisdevstudio/Assistant_vocal/blob/v0.6.0/deploy/debian/README.md)
 
+### Instance de développement Debian
+
+La VM de dev exécute le clone modifiable plutôt que le paquet APT :
+
+```bash
+systemctl --user start alfred-dev.service
+```
+
+Ouvrir `https://<IP_VM>:8765`. Les données et modèles sont dans
+`/home/<utilisateur>/Assistant_vocal/.local`. Le type de CPU Proxmox doit être
+`host` pour exposer AVX/AVX2.
+
 ## Démarrer sur Windows
 
 **Transcription retenue le 9 novembre : stack Murmure 1.11.3 autonome**, Parakeet

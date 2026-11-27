@@ -578,6 +578,11 @@ techniques. Une tâche dans cette liste ne vaut pas validation de ses choix ouve
   un build Vulkan et des poids f32. Établir d’abord la référence CPU de l’AuBox,
   puis comparer délai au premier son, stabilité et mémoire si un essai GPU
   est retenu. Compatibilité de cet AuBox et gain non vérifiés.
+  27 novembre, VM de dev créée et mesurée : Debian 13.8 amd64, 4 vCPU, 7,8 Gio
+  de RAM, disque de 75 Gio dont 64 Gio libres, IP 192.168.1.71, fuseau Europe/Paris.
+  Le processeur invité est encore exposé comme « QEMU Virtual CPU 2.5+ » sans AVX ;
+  passer le type de CPU Proxmox à `host` et redémarrer avant de valider Phonon.
+  Le reste du dimensionnement et les mesures de latence restent ouverts.
 - [ ] **P05 — Définir les critères d'acceptation.** Fixer latence, succès des commandes,
   faux réveils, reconnaissance des personnes et concurrence entre terminaux ; séparer
   objectifs et mesures. Inclure l'enfant de 4 ans et Fred. **Dépend de : B03.**
@@ -2472,6 +2477,13 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   du commit exact et signature locale vérifiés, installation via le tag et
   téléchargement signé via Latest vérifiés. Recette en lecture seule sur
   GitHub, version courante vérifiée à `v0.6.0`.
+  27 novembre, migration vers la VM de dev : dépôt cloné dans
+  `/home/morris-dev/Assistant_vocal`, venv Python 3.13, Node 24.22 et Rust 1.100
+  installés en espace utilisateur, worker Parakeet Linux compilé, UI construite,
+  données et modèles restaurés, certificat HTTPS régénéré pour `192.168.1.71` et
+  service utilisateur `alfred-dev.service` démarré. `/health` répond ; la voix
+  Phonon reste indisponible tant que la VM n’expose pas AVX/AVX2. Le terminal
+  ESP32 est hors ligne et les trois secrets DPAPI restent à ressaisir.
 - [ ] **A03 — Prévoir et vérifier sauvegarde/restauration.** Configuration, mémoires,
   profils et échéances ; procédure de mise à jour/retour arrière. Essai de restauration
   distinct de la production. **Dépend de : A02, I04, F06, F07.**
@@ -2488,6 +2500,8 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   version précédente en cas d’échec au démarrage. Ordre arrêt/sauvegarde et
   retour du code avec conservation des données vérifiés en simulation. Essai
   de restauration réelle et copie hors de la VM restent ouverts.
+  27 novembre, archive de pré-migration créée et vérifiée par SHA-256 ; la
+  restauration réelle et la copie hors de la VM restent à faire.
 - [ ] **A04 — Recette bureau puis salon.** Scénarios familiaux, français naturel,
   musique, profils et confidentialité, pannes réseau/services, redémarrage, quota et
   latence ; consigner résultats et écarts. **Dépend de : P05, A01, A02, A03, F09, F02,

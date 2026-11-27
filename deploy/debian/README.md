@@ -1,9 +1,48 @@
 # Installer Alfred sur Debian 13 amd64
 
-Le même paquet sert au serveur de dev et à la VM de prod. Il contient le code,
+Le paquet sert aux installations Debian durables et à la VM de prod ; l’instance
+de développement utilise le clone décrit ci-dessous. Il contient le code,
 les dépendances Python, le worker Parakeet compilé pour Linux et les fichiers
 statiques de la PWA. Les modèles, profils privés, certificats et secrets sont
 préparés une fois sur chaque machine.
+
+## Instance de développement sur la VM Debian
+
+La VM de dev utilise un clone Git modifiable, pas le paquet APT. Le dépôt est
+cloné dans `/home/<utilisateur>/Assistant_vocal` ; le venv, les modèles et les
+données restent dans `.local`, sous le même compte que l’outil d’édition.
+
+```bash
+cd /home/<utilisateur>/Assistant_vocal
+python3 -m venv --without-pip .venv
+curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+.venv/bin/python /tmp/get-pip.py
+.venv/bin/python -m pip install -c requirements.lock.txt \
+  fastapi uvicorn httpx tzdata websockets av numpy onnxruntime \
+  aioesphomeapi soundfile scipy 'ptts==0.7.0' pytest cryptography
+.venv/bin/python -m pip install --index-url https://download.pytorch.org/whl/cpu \
+  'torch==2.14.1' 'torchaudio==2.11.0'
+.venv/bin/python -m pip install 'speechbrain==1.1.2' 'backports.zstd==1.8.1'
+cargo build --release --locked --manifest-path native/murmure-stt/Cargo.toml
+cp native/murmure-stt/target/release/alfred-murmure-stt .local/bin/
+cd ui && npm install && npm run build
+```
+
+Le build Rust utilise les en-têtes OpenSSL ; `libssl-dev` peut être installé par
+APT ou extrait localement. Le service utilisateur `alfred-dev.service` est fourni
+dans ce dossier ; placer `ALFRED_HOST` et `ALFRED_TLS=--https` dans
+`~/.config/alfred-dev.env`, puis :
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now alfred-dev.service
+curl -k https://<IP_VM>:8765/health
+```
+
+La VM doit exposer AVX/AVX2 (type de CPU Proxmox `host`). Sans cela, `ptts` et
+les moteurs vocaux échouent. Les secrets DPAPI ne sont pas copiés ; les ressaisir
+dans l’interface. `openwakeword` n’est pas installé : le réveil utilisé est celui
+de Parakeet.
 
 ## Installer avec APT
 

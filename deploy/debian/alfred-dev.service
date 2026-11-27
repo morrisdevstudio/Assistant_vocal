@@ -1,0 +1,22 @@
+[Unit]
+Description=Alfred — instance de développement Debian
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+WorkingDirectory=%h/Assistant_vocal
+EnvironmentFile=-%h/.config/alfred-dev.env
+Environment=ALFRED_DATA_DIR=%h/Assistant_vocal/.local/data
+Environment=ALFRED_MODELS_DIR=%h/Assistant_vocal/.local/models
+Environment=ALFRED_PARAKEET_BIN=%h/Assistant_vocal/.local/bin/alfred-murmure-stt
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+ExecStart=%h/Assistant_vocal/.venv/bin/python -m alfred --host ${ALFRED_HOST} ${ALFRED_TLS}
+Restart=on-failure
+RestartSec=5s
+TimeoutStartSec=75s
+TimeoutStopSec=90s
+
+[Install]
+WantedBy=default.target
