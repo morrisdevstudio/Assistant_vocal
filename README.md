@@ -97,6 +97,10 @@ Autre port : `python -m alfred --port 8766` avec le Python du venv.
 Sous Linux : utiliser `.venv/bin/python` au lieu de `.venv\Scripts\python.exe`.
 Les dépendances verrouillées incluent les outils de test du prototype.
 
+La PWA React est servie par le même service sur `/pwa/`, après
+`npm --prefix ui install` puis `npm --prefix ui run build`. Sans build présent,
+seul le banc d'essai est disponible. Aucun second serveur n'est nécessaire.
+
 ### Accès LAN persistant
 
 Le satellite ESP32 fonctionne en Wi-Fi sur prise USB, sans câble de données vers

@@ -2498,6 +2498,19 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   (STT 592 ms, TTS 4,12 s). Bootstrap : paquets système, Avahi et `Linger=yes`
   actifs ; tour ESP32 réel mesuré (capture 2,7 s, STT 368 ms, TTS 980 ms,
   premier audio 1,38 s). UFW installé mais non activé pour préserver OpenCode Manager.
+- [x] **A08b — Servir la PWA depuis Alfred plutôt qu'un serveur séparé.**
+  27 novembre : route `/pwa/` dans `alfred/pwa.py`, montée par `create_app` sur le
+  même service et la même origine que l'API, donc sans CORS ni second port.
+  Index sans cache, assets fingerprintés immuables, `sw.js` revalidé, manifeste en
+  `application/manifest+json`, repli SPA limité aux navigations de page ; un
+  dossier absent laisse le banc d'essai intact. Base Vite par défaut `/pwa/`
+  (`ALFRED_UI_BASE`) avec manifeste, icônes et service worker dans le préfixe.
+  Le paquet Debian construit la PWA avec cette base. 4 tests dédiés, 967 tests
+  Python réussis et 2 ignorés. Vérifié dans Chromium à 400 px : service worker
+  enregistré sur `/pwa/`, manifeste correct, aucune erreur. Reste : recharger
+  `alfred-dev.service` sur la VM puis vérifier `/pwa/` sur `192.168.1.71:8765`
+  depuis le téléphone ; l'installation PWA Android n'est pas encore essayée.
+  **Dépend de : A02, A35.**
 - [ ] **A03 — Prévoir et vérifier sauvegarde/restauration.** Configuration, mémoires,
   profils et échéances ; procédure de mise à jour/retour arrière. Essai de restauration
   distinct de la production. **Dépend de : A02, I04, F06, F07.**

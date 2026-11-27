@@ -253,10 +253,16 @@ plus son fichier public avec `ALFRED_TLS_CA` pour le contrôle de démarrage.
 Redémarrer le service et garder l’accès sur le LAN ou le VPN. La protection de
 l’accès familial reste à valider avant l’ouverture.
 
-L’interface intégrée est servie par Alfred. Pour la PWA React, l’archive fournit
-`/opt/alfred/current/pwa`. Son hébergement demande en plus un serveur HTTPS
-statique avec le routage et les restrictions API décrits dans `ui/README.md`
-du dépôt. Le service installé ci-dessus ne démarre pas de serveur Vite.
+L’interface intégrée est servie par Alfred sur `/`. La PWA React est servie par
+le même service sur `/pwa/` : même origine, mêmes cookies, aucun serveur
+supplémentaire. L’archive place son build dans `/opt/alfred/current/pwa` ; en
+développement, Alfred lit `ui/dist` (ou `ALFRED_PWA_DIR`). Si le dossier est
+absent, `/pwa/` répond 404 et le banc d’essai reste intact.
+
+Reconstruire la PWA avec `npm --prefix ui run build` : la base par défaut est
+`/pwa/`, pour que les assets, le manifeste et le service worker restent dans ce
+préfixe. Le service worker précache uniquement le shell ; aucune conversation,
+réponse ou audio n’est mis en cache.
 
 ## Mettre à jour depuis l’archive autonome
 

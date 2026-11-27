@@ -57,7 +57,8 @@ cargo build --release --locked --manifest-path "$source_dir/native/murmure-stt/C
 install -m 0755 -- "$work/cargo-target/release/alfred-murmure-stt" "$bundle/bin/alfred-murmure-stt"
 
 npm --prefix "$source_dir/ui" ci
-npm --prefix "$source_dir/ui" run build
+# La PWA est servie par Alfred sous /pwa/ : les ressources doivent viser ce préfixe.
+ALFRED_UI_BASE=/pwa/ npm --prefix "$source_dir/ui" run build
 mv -- "$source_dir/ui/dist" "$bundle/pwa"
 
 tar -czf "$output/$name.tar.gz" -C "$work" -- "$name"

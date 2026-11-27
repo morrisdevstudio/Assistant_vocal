@@ -2,17 +2,19 @@
 
 Interface React/TypeScript avec icônes Lucide React, raccordée au serveur Alfred.
 
-```powershell
-.\.venv\Scripts\python.exe scripts/setup_ui_https.py
+Alfred sert la PWA compilée sur `/pwa/`, avec la même origine et la même
+protection d’origine que le reste de l’API. C’est le mode normal sur la VM.
+
+```bash
 cd ui
 npm ci
 npm run build
-npm run preview
 ```
 
-Ouvrir [Alfred](https://127.0.0.1:5173/) sur le PC. Le certificat dédié
-sous `.local/https/` est signé par l’autorité locale `ui-ca.crt`.
-Le navigateur doit reconnaître cette autorité pour installer la PWA.
+Le build vise `/pwa/` par défaut (`ALFRED_UI_BASE` pour changer). Recharger
+Alfred n’est pas nécessaire : relancer la page suffit. Pour le développement
+avec rechargement automatique, `npm run dev` garde le proxy HTTPS décrit
+ci-dessous.
 
 Pour un accès sur le réseau local, générer le certificat UI avec
 `scripts/setup_ui_https.py --host <IPv4-du-PC>` et renseigner dans `ui/.env.local` :
@@ -30,8 +32,8 @@ le rechargement automatique, utiliser `npm run dev`.
 Le proxy de la PWA transmet les routes autorisées à Alfred sur le port 8765 et
 vérifie son certificat `.local/https/server.crt`. Le backend contrôle l’origine
 des écritures. Les clés des services restent sur Alfred. Vite fournit ce proxy
-en développement et en prévisualisation. Un hébergement statique de `dist/`
-doit fournir un routage API équivalent. L’authentification par comptes Home
+en développement ; en production, Alfred sert directement `/pwa/` et la liste
+des routes autorisées ne s’applique plus. L’authentification par comptes Home
 Assistant reste à intégrer avant production.
 
 La rubrique **À propos et diagnostic** utilise `GET /api/updates` et les

@@ -62,6 +62,7 @@ from alfred.wake_manager import WakeManager
 from alfred.room_capture import install_room_capture_routes
 from alfred.wake_routes import install_wake_routes
 from alfred.wake_settings import strip_prefix
+import alfred.pwa as pwa
 
 logger = logging.getLogger("alfred")
 STATIC = Path(__file__).parent / "static"
@@ -708,11 +709,12 @@ def create_app(settings: Settings | None = None, voice_service=None, conversatio
                     and request.headers.get("content-type", "").split(";")[0] != expected_type):
                 return JSONResponse({"detail": f"Utiliser {expected_type}."}, status_code=415)
         response = await call_next(request)
-        is_versioned_static = (request.method in ("GET", "HEAD")
-                               and request.url.path.startswith("/static/")
-                               and request.url.query)
-        response.headers["Cache-Control"] = ("public, max-age=3600"
-                                             if is_versioned_static else "no-store")
+        if "cache-control" not in response.headers:
+            is_versioned_static = (request.method in ("GET", "HEAD")
+                                   and request.url.path.startswith("/static/")
+                                   and request.url.query)
+            response.headers["Cache-Control"] = ("public, max-age=3600"
+                                                 if is_versioned_static else "no-store")
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; script-src 'self'; style-src 'self'; "
@@ -2018,6 +2020,9 @@ def create_app(settings: Settings | None = None, voice_service=None, conversatio
     async def index():
         return FileResponse(STATIC / "index.html")
 
+    served = pwa.install_pwa_routes(app, settings.pwa_dir)
+    if served:
+        logger.info("PWA servie sur %s depuis %s", pwa.PREFIX, served)
     install_wake_routes(app)
     install_room_capture_routes(app)
     app.mount("/static", StaticFiles(directory=STATIC), name="static")

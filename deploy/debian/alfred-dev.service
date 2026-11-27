@@ -10,6 +10,7 @@ EnvironmentFile=-%h/.config/alfred-dev.env
 Environment=ALFRED_DATA_DIR=%h/projects/repos/Assistant_vocal/.local/data
 Environment=ALFRED_MODELS_DIR=%h/projects/repos/Assistant_vocal/.local/models
 Environment=ALFRED_PARAKEET_BIN=%h/projects/repos/Assistant_vocal/.local/bin/alfred-murmure-stt
+Environment=ALFRED_PWA_DIR=%h/projects/repos/Assistant_vocal/ui/dist
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=PYTHONUNBUFFERED=1
 ExecStart=%h/projects/repos/Assistant_vocal/.venv/bin/python -m alfred --host ${ALFRED_HOST} ${ALFRED_TLS}
