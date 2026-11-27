@@ -57,7 +57,7 @@ systemctl --user start alfred-dev.service
 ```
 
 Ouvrir `https://<IP_VM>:8765`. Les données et modèles sont dans
-`/home/<utilisateur>/Assistant_vocal/.local`. Le type de CPU Proxmox `host`
+`/home/<utilisateur>/projects/repos/Assistant_vocal/.local`. Le type de CPU Proxmox `host`
 reste recommandé pour le wheel officiel ; à défaut, `ptts` est reconstruit
 depuis les sources.
 

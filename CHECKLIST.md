@@ -2480,7 +2480,7 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   téléchargement signé via Latest vérifiés. Recette en lecture seule sur
   GitHub, version courante vérifiée à `v0.6.0`.
   27 novembre, migration vers la VM de dev : dépôt cloné dans
-  `/home/morris-dev/Assistant_vocal`, venv Python 3.13, Node 24.22 et Rust 1.100
+  `/home/morris-dev/projects/repos/Assistant_vocal`, venv Python 3.13, Node 24.22 et Rust 1.100
   installés en espace utilisateur, worker Parakeet Linux compilé, UI construite,
   données et modèles restaurés, certificat HTTPS régénéré pour `192.168.1.71` et
   service utilisateur `alfred-dev.service` démarré. `/health` répond, Parakeet
@@ -2492,6 +2492,9 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   48 tests JavaScript et 18 tests UI réussis ; interface HTTPS 200, STT 2,2 s,
   TTS 1,24 s pour une phrase courte ; banc `/api/voice/turn` : STT 585 ms et
   TTS 4,14 s pour la réponse de test. Secrets et terminal restent à raccorder.
+  Projet déplacé le 27 novembre dans `~/projects/repos/Assistant_vocal` ; unité
+  `systemd` et profils Phonon repointés, service relancé, banc audio revérifié
+  (STT 592 ms, TTS 4,12 s).
 - [ ] **A03 — Prévoir et vérifier sauvegarde/restauration.** Configuration, mémoires,
   profils et échéances ; procédure de mise à jour/retour arrière. Essai de restauration
   distinct de la production. **Dépend de : A02, I04, F06, F07.**

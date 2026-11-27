@@ -9,11 +9,11 @@ préparés une fois sur chaque machine.
 ## Instance de développement sur la VM Debian
 
 La VM de dev utilise un clone Git modifiable, pas le paquet APT. Le dépôt est
-cloné dans `/home/<utilisateur>/Assistant_vocal` ; le venv, les modèles et les
+cloné dans `/home/<utilisateur>/projects/repos/Assistant_vocal` ; le venv, les modèles et les
 données restent dans `.local`, sous le même compte que l’outil d’édition.
 
 ```bash
-cd /home/<utilisateur>/Assistant_vocal
+cd /home/<utilisateur>/projects/repos/Assistant_vocal
 python3 -m venv --without-pip .venv
 curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
 .venv/bin/python /tmp/get-pip.py
