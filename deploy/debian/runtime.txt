@@ -1,0 +1,16 @@
+# Dépendances du service Debian avec réveil STT Parakeet.
+# Les versions déjà verrouillées du projet sont appliquées via constraints.txt.
+fastapi
+uvicorn
+httpx
+tzdata
+websockets
+av
+numpy
+onnxruntime
+aioesphomeapi
+# Dépendance Linux de l'API ESPHome pour Python 3.13.
+backports.zstd==1.8.1
+soundfile
+scipy
+ptts==0.7.0

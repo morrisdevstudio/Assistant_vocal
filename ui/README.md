@@ -34,6 +34,12 @@ en développement et en prévisualisation. Un hébergement statique de `dist/`
 doit fournir un routage API équivalent. L’authentification par comptes Home
 Assistant reste à intégrer avant production.
 
+La rubrique **À propos et diagnostic** utilise `GET /api/updates` et les
+quatre opérations `POST /api/updates/{check,install,auto-on,auto-off}`. Le
+proxy transmet `X-Alfred-Update-Key` sur ces requêtes. Le serveur n’accepte
+les opérations qu’en HTTPS ou sur une adresse de boucle locale et vérifie
+le code administrateur de la VM.
+
 ## Conversation
 
 Entrée envoie à Alfred, Maj+Entrée insère une ligne. Les réponses arrivent en

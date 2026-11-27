@@ -10,12 +10,14 @@
   <script type="module" src="/static/terminal-panel.js?v=20261120-terminal-conversation"></script>
   <script type="module" src="/static/wake-panel.js?v=20261113&v=20261113-opt"></script>
   <script type="module" src="/static/ai-config.js?v=20261113-opt"></script>
+  <script type="module" src="/static/updates-panel.js?v=1"></script>
   <script type="module" src="/static/home-panel.js?v=20261121-deux-types-eclairage"></script>
   <script type="module" src="/static/music-panel.js?v=20261113-opt"></script>
   <script type="module" src="/static/shopping-panel.js?v=20261113-opt"></script>
   <script type="module" src="/static/announcements-panel.js?v=20261113-opt"></script>
   <script type="module" src="/static/profiles-panel.js?v=20261113-opt"></script>
   <script type="module" src="/static/logs-panel.js?v=20261116"></script>
+  <script type="module" src="/static/room-capture.js?v=20261125-guide"></script>
 </head>
 <body>
   <a class="skip-link" href="#view-content">Aller au contenu</a>
@@ -35,11 +37,34 @@
         <a href="#shopping" data-view-link="shopping"><span aria-hidden="true">05</span>Courses</a>
         <a href="#announcements" data-view-link="announcements"><span aria-hidden="true">06</span>Annonces</a>
         <a href="#profiles" data-view-link="profiles"><span aria-hidden="true">07</span>Profils vocaux</a>
-        <a href="#settings" data-view-link="settings"><span aria-hidden="true">08</span>Connexion IA</a>
+        <a href="#settings" data-view-link="settings"><span aria-hidden="true">08</span>Paramètres</a>
         <a href="#logs" data-view-link="logs"><span aria-hidden="true">09</span>Logs</a>
       </nav>
       <div id="view-content" class="view-content" tabindex="-1">
       <div id="logs" class="app-view" data-view="logs">
+        <section class="panel">
+          <h2>Test acoustique guidé · Salon</h2>
+          <p>Coupez la TV et la musique. Gardez l’ESP32 à sa place et utilisez le haut-parleur du téléphone pour les balayages.</p>
+          <label>Distance entre le canapé et l’ESP32 en mètres (facultatif)
+            <input id="room-distance" type="number" min="0.5" max="20" step="0.1" inputmode="decimal">
+          </label>
+          <p id="room-progress" class="hint"></p>
+          <h3 id="room-title"></h3>
+          <p id="room-instructions"></p>
+          <p id="room-phrase" class="enrollment-text" hidden></p>
+          <div class="voice-actions">
+            <button id="room-start" type="button" disabled>Enregistrer cette étape</button>
+            <button id="room-play" type="button" hidden disabled>Jouer le balayage</button>
+            <button id="room-accept" type="button" hidden>Valider et continuer</button>
+            <button id="room-cancel" type="button" class="secondary" hidden>Annuler la prise</button>
+          </div>
+          <p id="room-status" role="status" aria-live="polite"></p>
+          <div class="voice-actions">
+            <button id="room-download" type="button" class="secondary" disabled>Télécharger les prises (ZIP)</button>
+            <button id="room-restart" type="button" class="secondary" hidden>Nouveau parcours</button>
+          </div>
+          <p class="hint">Gardez cette page ouverte jusqu’au téléchargement de l’archive.</p>
+        </section>
         <section class="panel"><h2>Logs</h2>
           <p>Historique local des échanges conservé sept jours. Les textes sont visibles depuis cette interface.</p>
           <h3>Test guidé du réveil ESP32</h3>
@@ -272,6 +297,21 @@
     </section>
       </div>
       <div id="settings" class="app-view" data-view="settings">
+    <section class="panel" aria-labelledby="updates-heading">
+      <h2 id="updates-heading">Mises à jour d’Alfred</h2>
+      <details id="updates-panel"><summary>Gérer les mises à jour</summary>
+        <p id="updates-versions" class="hint">Chargement…</p>
+        <div id="updates-controls" hidden>
+          <label>Code d’administration<input id="updates-key" type="password" maxlength="128" autocomplete="off" spellcheck="false"></label>
+          <label><input id="updates-auto" type="checkbox" disabled>Installer automatiquement à 4 h, heure du serveur</label>
+          <div class="voice-actions">
+            <button type="button" class="secondary" data-update="check" disabled>Rechercher des mises à jour</button>
+            <button type="button" data-update="install" disabled>Forcer la mise à jour</button>
+          </div>
+        </div>
+        <p id="updates-feedback" role="status" aria-live="polite"></p>
+      </details>
+    </section>
     <section class="panel" aria-labelledby="internet-heading">
       <div class="panel-heading"><h2 id="internet-heading">Internet et météo</h2><span class="badge" id="internet-state">Vérification…</span></div>
       <p>Actualités et recherche avec Tavily. Météo personnelle via <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>, sans clé. Les réponses et leurs sources apparaissent dans le laboratoire vocal.</p>

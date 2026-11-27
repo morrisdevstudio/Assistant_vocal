@@ -134,8 +134,8 @@ textarea::placeholder { color: var(--muted); }
 .preference-select > span { flex: 1; min-width: 0; }
 .preference-select strong, .preference-toggle-row strong, .preference-range strong { display: block; font-size: calc(14px * var(--text-scale)); font-weight: 500; }
 .preference-select small, .preference-toggle-row small { display: block; font-size: calc(11px * var(--text-scale)); color: var(--muted); line-height: 1.7; margin-top: 6px; }
-.preference-select select { max-width: 50%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 11px 8px; font: inherit; font-size: calc(12px * var(--text-scale)); min-height: 44px; }
-.preference-select select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.preference-select :is(select, input[type=password]) { max-width: 50%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 11px 8px; font: inherit; font-size: calc(12px * var(--text-scale)); min-height: 44px; }
+.preference-select :is(select, input[type=password]):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .preference-toggle-row { display: flex; align-items: center; gap: 20px; padding: 20px; cursor: pointer; }
 .preference-toggle-row > span:first-child { flex: 1; }
 .preference-toggle-row > input { width: 44px; height: 26px; position: absolute; opacity: 0; right: 0; }
@@ -193,6 +193,7 @@ textarea::placeholder { color: var(--muted); }
 .settings-card-note { padding: 0 19px 18px; }
 .settings-card-intro { padding-top: 17px; padding-bottom: 0; }
 .settings-card-action { display: flex; padding: 0 19px 17px; }
+.update-actions { flex-wrap: wrap; gap: 8px; }
 .settings-facts + .settings-card-action, .settings-card-intro + .settings-card-action { padding-top: 15px; }
 .house-connection { display: flex; align-items: center; gap: 12px; padding: 18px; }
 .house-connection > strong { flex: 1; font-size: 14px; font-weight: 500; }
@@ -483,7 +484,7 @@ textarea::placeholder { color: var(--muted); }
   .settings-content { padding: 25px 18px; }
   .preference-select { flex-wrap: wrap; gap: 12px; }
   .preference-select > span { flex-basis: 100%; }
-  .preference-select select { max-width: 100%; width: 100%; }
+  .preference-select :is(select, input[type=password]) { max-width: 100%; width: 100%; }
   .schedule-content { padding: 25px 18px 20px; }
   .schedule-form { padding: 17px; }
   .schedule-footer { padding-left: 18px; padding-right: 18px; }

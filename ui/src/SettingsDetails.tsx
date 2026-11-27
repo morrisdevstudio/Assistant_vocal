@@ -282,6 +282,55 @@ function readDiagnosis() {
   }
 }
 
+type UpdateStatus = {
+  available: boolean
+  auto_enabled?: boolean
+  installed?: string
+  candidate?: string
+  phase?: 'idle' | 'queued' | 'running' | 'failed'
+  message?: string
+}
+
+function UpdateSettings() {
+  const status = useRemote<UpdateStatus>('updates', 2000)
+  const action = useServerAction()
+  const [key, setKey] = useState('')
+  const value = status.data
+  const disabled = action.busy || !key.trim() || !window.isSecureContext || !value?.available
+    || value.phase === 'queued' || value.phase === 'running'
+
+  async function request(operation: 'check' | 'install' | 'auto-on' | 'auto-off') {
+    await action.run(() => backendJson('updates/' + operation, {
+      ...jsonPost({}),
+      headers: { 'Content-Type': 'application/json', 'X-Alfred-Update-Key': key.trim() },
+    }))
+    status.reload()
+  }
+
+  return <PreferenceGroup title="Mises à jour d’Alfred">
+    {value?.available ? <>
+      <dl className="settings-facts">
+        <div><dt>Version installée</dt><dd>{value.installed || '—'}</dd></div>
+        <div><dt>Version candidate</dt><dd>{value.candidate || '—'}</dd></div>
+      </dl>
+      <label className="preference-select"><span><strong>Code d’administration</strong></span>
+        <input type="password" maxLength={128} autoComplete="off" spellCheck={false} value={key} onChange={event => setKey(event.target.value)} />
+      </label>
+      <label className="preference-toggle-row"><span><strong>Mises à jour automatiques</strong><small>Chaque jour à 4 h, heure du serveur.</small></span>
+        <input type="checkbox" role="switch" checked={Boolean(value.auto_enabled)} disabled={disabled} onChange={event => request(event.target.checked ? 'auto-on' : 'auto-off')} />
+        <span className="preference-switch" aria-hidden="true" />
+      </label>
+      <div className="settings-card-action update-actions">
+        <button type="button" className="house-secondary" disabled={disabled} onClick={() => request('check')}>Rechercher des mises à jour</button>
+        <button type="button" className="house-secondary" disabled={disabled} onClick={() => {
+          if (window.confirm('Installer maintenant la dernière version disponible ? Alfred pourra redémarrer.')) request('install')
+        }}>Forcer la mise à jour</button>
+      </div>
+    </> : <p className="settings-card-intro">{status.error || (value ? 'Disponible avec le paquet Debian alfred-home.' : 'Chargement…')}</p>}
+    <p className="settings-card-intro" role="status">{action.error || (value?.available && !window.isSecureContext ? 'Ouvrez Alfred en HTTPS pour effectuer une opération.' : value?.message)}</p>
+  </PreferenceGroup>
+}
+
 export function DiagnosticSettings() {
   const backend = useRemote<AlfredStatus>('status')
   const [diagnosis, setDiagnosis] = useState(readDiagnosis)
@@ -299,6 +348,7 @@ export function DiagnosticSettings() {
         </>}
       </dl>
     </PreferenceGroup>
+    <UpdateSettings />
     <PreferenceGroup title="Diagnostic local">
       <dl className="settings-facts">
         <div><dt>Contexte de navigation</dt><dd>{diagnosis.secure}</dd></div>

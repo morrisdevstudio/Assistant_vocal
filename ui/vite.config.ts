@@ -6,14 +6,8 @@ import { Agent } from 'node:https'
 import { fileURLToPath } from 'node:url'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// Les fichiers restent dans .local : aucune clé privée dans les assets de l'UI.
-const https = {
-  cert: readFileSync(new URL('../.local/https/ui-server.crt', import.meta.url)),
-  key: readFileSync(new URL('../.local/https/ui-server.key', import.meta.url)),
-}
-
-const readRoutes = /^\/api\/(?:status|ai\/config|internet\/config|home\/(?:config|devices)|terminal\/(?:status|leds)|voice\/status|shopping\/items(?:\/completed)?|music\/(?:config|library|players|artwork)|timers|calendar-reminders\/(?:family|status))$/
-const writeRoutes = /^\/api\/(?:ai\/models(?:\/test)?|terminal\/leds|conversation\/(?:text|voice|reset)|shopping\/items(?:\/(?:complete|restore|rename|delete))?|music\/(?:play|control)|timers(?:\/[a-f0-9]{32}\/cancel)?|calendar-reminders\/family)$/
+const readRoutes = /^\/api\/(?:status|updates|ai\/config|internet\/config|home\/(?:config|devices)|terminal\/(?:status|leds)|voice\/status|shopping\/items(?:\/completed)?|music\/(?:config|library|players|artwork)|timers|calendar-reminders\/(?:family|status))$/
+const writeRoutes = /^\/api\/(?:updates\/(?:check|install|auto-on|auto-off)|ai\/models(?:\/test)?|terminal\/leds|conversation\/(?:text|voice|reset)|shopping\/items(?:\/(?:complete|restore|rename|delete))?|music\/(?:play|control)|timers(?:\/[a-f0-9]{32}\/cancel)?|calendar-reminders\/family)$/
 const restrictAlfredApi: Connect.NextHandleFunction = (request, response, next) => {
   const path = request.url?.split('?')[0] ?? ''
   if (!path.startsWith('/api/')) return next()
@@ -43,16 +37,19 @@ const network = (host: string, target: string) => ({
   host,
   port: 5173,
   strictPort: true,
-  https,
+  https: {
+    cert: readFileSync(new URL('../.local/https/ui-server.crt', import.meta.url)),
+    key: readFileSync(new URL('../.local/https/ui-server.key', import.meta.url)),
+  },
   proxy: { '/api/': backend(target) },
 })
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, isPreview, mode }) => {
   const config = loadEnv(mode, fileURLToPath(new URL('.', import.meta.url)), 'ALFRED_UI_')
-  const options = network(
+  const options = command === 'serve' || isPreview ? network(
     config.ALFRED_UI_HOST || '127.0.0.1',
     config.ALFRED_UI_BACKEND || 'https://127.0.0.1:8765',
-  )
+  ) : undefined
 
   return {
     plugins: [{

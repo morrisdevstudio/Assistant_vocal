@@ -25,6 +25,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from alfred import __version__
 from alfred.config import Settings
+from alfred.updates import UpdateQueue, UpdatesBusy
 from alfred.diagnostics import Diagnostics
 from alfred.intents import IntentService, LIGHT_ON_ROOM
 from alfred.intent_context import CURRENT_TURN
@@ -58,6 +59,7 @@ from alfred.voice_identity import VoiceIdentity
 from alfred.terminal_leds import DEFAULT_COLORS, LedEffect, LedPhase
 from alfred.terminal import DirectTerminal, TerminalConfig
 from alfred.wake_manager import WakeManager
+from alfred.room_capture import install_room_capture_routes
 from alfred.wake_routes import install_wake_routes
 from alfred.wake_settings import strip_prefix
 
@@ -348,6 +350,7 @@ def load_wake_detector(settings, config):
 def create_app(settings: Settings | None = None, voice_service=None, conversation_service=None,
                home_service=None, speaker_service=None, calendar_service=None):
     settings = settings or Settings.from_env()
+    updates = UpdateQueue()
     store = Store(settings.data_dir)
     timers = TimerService(store)
     home = home_service or HomeService(HomeStore(settings.data_dir, settings.ha_url,
@@ -723,6 +726,26 @@ def create_app(settings: Settings | None = None, voice_service=None, conversatio
         healthy = getattr(app.state, "scheduler_ok", False)
         return JSONResponse({"status": "ok" if healthy else "degraded", "version": __version__},
                             status_code=200 if healthy else 503)
+
+    @app.get("/api/updates")
+    def update_status():
+        return updates.status()
+
+    @app.post("/api/updates/{operation}", status_code=202)
+    def request_update(operation: Literal["check", "install", "auto-on", "auto-off"], request: Request):
+        if not updates.available:
+            raise HTTPException(503, "Les mises à jour intégrées nécessitent le paquet Debian alfred-home.")
+        if request.url.scheme != "https" and request.url.hostname not in ("localhost", "127.0.0.1", "::1"):
+            raise HTTPException(403, "Ouvrez Alfred en HTTPS pour administrer les mises à jour.")
+        if not updates.authorized(request.headers.get("x-alfred-update-key", "")):
+            raise HTTPException(403, "Code d’administration invalide.")
+        try:
+            updates.enqueue(operation)
+        except (UpdatesBusy, FileExistsError):
+            raise HTTPException(409, "Une opération est déjà en cours.") from None
+        except OSError:
+            raise HTTPException(503, "Service de mises à jour indisponible.") from None
+        return {"phase": "queued"}
 
     @app.get("/api/status")
     async def status():
@@ -1996,5 +2019,6 @@ def create_app(settings: Settings | None = None, voice_service=None, conversatio
         return FileResponse(STATIC / "index.html")
 
     install_wake_routes(app)
+    install_room_capture_routes(app)
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
     return app

@@ -488,6 +488,8 @@ class DirectTerminal:
                     self.error = type(error).__name__
                 finally:
                     self.connected, self.phase = False, "disconnected"
+                    if getattr(self.wake_test, "capture_only", False):
+                        await self.wake_test.finish("flux_interrompu")
                     self.leds.detach()
                     self.wake_last_audio = 0.
                     self.capture = None
@@ -717,6 +719,9 @@ class DirectTerminal:
                 if not self.wake_flow_started_at:
                     self.wake_flow_started_at = self.wake_last_audio
                 self.last_progress_at = self.wake_last_audio
+                if getattr(self.wake_test, "capture_only", False):
+                    await self.wake_test.observe(data)
+                    return
                 detected = self.wake_gate.feed(data)
                 if self.wake_test:
                     self.wake_test.observe(data)

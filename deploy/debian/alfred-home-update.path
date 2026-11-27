@@ -1,0 +1,11 @@
+[Unit]
+Description=Demandes de mise à jour d’Alfred
+
+[Path]
+PathExists=/var/lib/alfred-updater/requests/check
+PathExists=/var/lib/alfred-updater/requests/install
+PathExists=/var/lib/alfred-updater/requests/auto-on
+PathExists=/var/lib/alfred-updater/requests/auto-off
+
+[Install]
+WantedBy=multi-user.target

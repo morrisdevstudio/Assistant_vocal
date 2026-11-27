@@ -1,0 +1,10 @@
+[Unit]
+Description=Mise à jour APT demandée depuis Alfred
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -EsB /usr/lib/alfred-home/bundle/updater.py manual
+TimeoutStartSec=30min
+PrivateTmp=yes

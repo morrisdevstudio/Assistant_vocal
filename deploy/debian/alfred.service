@@ -1,0 +1,26 @@
+[Unit]
+Description=Assistant vocal Alfred
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=exec
+User=alfred
+Group=alfred
+WorkingDirectory=/opt/alfred/current
+Environment=ALFRED_HOST=127.0.0.1 ALFRED_DATA_DIR=/var/lib/alfred/data ALFRED_MODELS_DIR=/var/lib/alfred/models ALFRED_PARAKEET_BIN=/opt/alfred/current/bin/alfred-murmure-stt PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+EnvironmentFile=-/etc/alfred/alfred.env
+ExecStart=/opt/alfred/current/.venv/bin/python -m alfred --host ${ALFRED_HOST} $ALFRED_TLS
+ExecStartPost=/opt/alfred/current/.venv/bin/python /opt/alfred/current/health.py
+Restart=on-failure
+RestartSec=5s
+TimeoutStartSec=75s
+TimeoutStopSec=90s
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/alfred/data -/var/lib/alfred-updater/requests
+
+[Install]
+WantedBy=multi-user.target
