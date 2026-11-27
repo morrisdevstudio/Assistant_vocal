@@ -2485,16 +2485,19 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   données et modèles restaurés, certificat HTTPS régénéré pour `192.168.1.71` et
   service utilisateur `alfred-dev.service` démarré. `/health` répond, Parakeet
   transcrit et Phonon synthétise après reconstruction locale de `ptts` 0.7.0
-  (le wheel officiel exige AVX). Le terminal ESP32 est hors ligne et les trois
-  secrets DPAPI restent à ressaisir.
+  (le wheel officiel exige AVX). Le terminal ESP32 est connecté en
+  `192.168.1.180` après activation d’Avahi ; les secrets DPAPI restent à ressaisir.
   Bascule du 27 novembre : instance Windows arrêtée, SQLite finale copiée et
   `integrity_check` ok. Recette Linux : 963 tests Python réussis, 2 ignorés,
   48 tests JavaScript et 18 tests UI réussis ; interface HTTPS 200, STT 2,2 s,
   TTS 1,24 s pour une phrase courte ; banc `/api/voice/turn` : STT 585 ms et
-  TTS 4,14 s pour la réponse de test. Secrets et terminal restent à raccorder.
+  TTS 4,14 s pour la réponse de test. Secrets restent à ressaisir ; le terminal
+  est validé.
   Projet déplacé le 27 novembre dans `~/projects/repos/Assistant_vocal` ; unité
   `systemd` et profils Phonon repointés, service relancé, banc audio revérifié
-  (STT 592 ms, TTS 4,12 s).
+  (STT 592 ms, TTS 4,12 s). Bootstrap : paquets système, Avahi et `Linger=yes`
+  actifs ; tour ESP32 réel mesuré (capture 2,7 s, STT 368 ms, TTS 980 ms,
+  premier audio 1,38 s). UFW installé mais non activé pour préserver OpenCode Manager.
 - [ ] **A03 — Prévoir et vérifier sauvegarde/restauration.** Configuration, mémoires,
   profils et échéances ; procédure de mise à jour/retour arrière. Essai de restauration
   distinct de la production. **Dépend de : A02, I04, F06, F07.**

@@ -707,9 +707,10 @@ retenus pour la première version ; les rappels restent liés aux dates du calen
   `ptts` 0.7.0 a été reconstruit localement pour cette VM, et Phonon fonctionne.
   Le type Proxmox `host` reste recommandé pour le wheel officiel et la performance.
   Le dépôt,
-  les modèles utiles et les données ont été préparés ; le raccordement HA/ESP32
-  et les mesures restent à valider. Cette VM est l’instance de dev active ; la
-  future prod reste distincte.
+  les modèles utiles et les données ont été préparés ; le terminal ESP32 est
+  raccordé en `192.168.1.180` et un tour réel a été mesuré, tandis que Home
+  Assistant et les secrets restent à raccorder. Cette VM est l’instance de dev
+  active ; la future prod reste distincte.
 
 Informations reprises le 26 octobre du document `docs/inventory.md` du projet
 `D:\App en dev\Serveur`, fondées sur ses relevés des 23 et 24 octobre ; aucune
