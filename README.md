@@ -18,6 +18,36 @@ Music Assistant reste disponible ; le lecteur de test ESP32 a été désélectio
 les rappels actifs sont
 stockés dans les calendriers Home Assistant ; l'ancien banc local reste suspendu.
 
+## Installer sur Debian
+
+### Première installation
+
+Exécuter ces commandes sur Debian 13 amd64. Le fichier de source contient la
+clé publique du dépôt APT d’Alfred.
+
+```bash
+sudo apt update &&
+sudo apt install -y curl ca-certificates &&
+curl -fsSL 'https://github.com/morrisdevstudio/Assistant_vocal/releases/latest/download/alfred-home.sources' -o alfred-home.sources &&
+sudo install -m 0644 alfred-home.sources /etc/apt/sources.list.d/alfred-home.sources &&
+sudo apt update &&
+sudo apt install alfred-home
+```
+
+### Mettre à jour Alfred
+
+APT récupère la dernière version stable publiée sur GitHub avec la source déjà
+configurée.
+
+```bash
+sudo apt update &&
+sudo apt install --only-upgrade alfred-home
+```
+
+L’installeur sauvegarde les données avant la bascule, conserve les réglages et
+les modèles, puis contrôle le redémarrage du service.
+[Guide d’installation et de configuration Debian](https://github.com/morrisdevstudio/Assistant_vocal/blob/v0.6.0/deploy/debian/README.md)
+
 ## Démarrer sur Windows
 
 **Transcription retenue le 9 novembre : stack Murmure 1.11.3 autonome**, Parakeet
