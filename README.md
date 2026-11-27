@@ -597,19 +597,19 @@ L'autorité publique est ensuite servie sur `/alfred-local-ca.crt` : à importer
 une fois par appareil (« Installer un certificat » → « Certificat CA » sur
 Android). Redémarrer Alfred après avoir renouvelé le certificat.
 
-Un navigateur installé sur la machine d'Alfred doit aussi connaître cette
-autorité, sinon il refuse la page (`ERR_CERT_AUTHORITY_INVALID`) alors que le
-téléphone l'ouvre. Sans sudo, l'ajouter au magasin NSS de l'utilisateur suffit
-pour Chromium et les navigateurs Electron (Timon, VS Code) :
+Le navigateur intégré de Timon ouvre `https://<IP>:8765/pwa/` sans
+avertissement, micro disponible : vérifié le 27 novembre, certificat signé par
+l'autorité locale, sans aucune modification des magasins de confiance de la
+machine. Le mécanisme exact de Timon n'a pas été identifié (ni exception
+propre, ni lecture du magasin NSS) ; il ne faut donc pas en déduire qu'un autre
+navigateur l'acceptera.
 
-```bash
-.venv/bin/python scripts/trust_local_authority.py --no-system
-```
-
-Sans l'option, le script ajoute aussi l'autorité au magasin système
-(`update-ca-certificates`, sudo), ce qui couvre `curl`, Python et les autres
-clients. Fermer et rouvrir le navigateur ensuite : un magasin de confiance est
-lu au lancement.
+Un Chromium ordinaire installé sur la machine d'Alfred, comme `curl` ou Python,
+refuse en revanche la page (`ERR_CERT_AUTHORITY_INVALID`) tant que l'autorité
+n'est pas dans un magasin qu'il lit. `scripts/trust_local_authority.py` l'y
+ajoute : magasin NSS de l'utilisateur par défaut (sans sudo), plus le magasin
+système avec sudo (`update-ca-certificates`). Fermer et rouvrir le navigateur
+ensuite : un magasin de confiance est lu au lancement.
 
 ## Configuration et données
 

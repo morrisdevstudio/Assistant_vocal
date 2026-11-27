@@ -1687,6 +1687,11 @@ Autres points à traiter avant de figer l'architecture :
   de confiance locaux. `scripts/trust_local_authority.py` l’ajoute au magasin
   NSS de l’utilisateur (Chromium, Electron) et, avec sudo, au magasin système ;
   un navigateur doit être fermé puis rouvert pour relire ces magasins.
+  Le navigateur intégré de Timon a ensuite ouvert la page sans avertissement,
+  micro disponible, alors que ces magasins n’avaient pas changé : son mécanisme
+  propre (exception, magasin séparé) n’est pas identifié, et le navigateur isolé
+  de la mission continue de refuser la page. Résultat confirmé par
+  l’utilisateur, non généralisable à un autre navigateur.
 
 - 27 novembre 2026 : l’utilisateur demande de gérer l’option automatique, la
   recherche manuelle et la mise à jour forcée depuis Alfred. Implémentation

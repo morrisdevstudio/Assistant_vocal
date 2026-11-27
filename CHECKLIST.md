@@ -1,6 +1,6 @@
 ﻿# Alfred — checklist de mise en place
 
-- [ ] **A36 — Rendre le HTTPS d’Alfred utilisable par les appareils.**
+- [x] **A36 — Rendre le HTTPS d’Alfred utilisable par les appareils.**
   Page blanche constatée sur `https://<IP>:8765/pwa/` : le navigateur refuse
   `server.crt`, auto-signé depuis le passage de la PWA sous `/pwa/`. Le
   certificat est désormais signé par l’autorité locale (`--ca-cert` et
@@ -24,20 +24,26 @@
   pas). Satellite reconnecté en veille, micro et détecteur sains ; STT/TTS
   disponibles ; catalogue Home Assistant relu depuis le catalogue réel
   (43 entités, mêmes pièces).
-  Reste : importer `alfred-local-ca.crt` une fois sur chaque appareil, puis
-  confirmer sur le téléphone que la page s’ouvre sans avertissement et que le
-  micro fonctionne (vérification Chromium faite côté serveur uniquement).
+  Reste : importer `alfred-local-ca.crt` sur les autres appareils et confirmer
+  la recette Android (bandeau, avertissement, micro).
   27 novembre, un navigateur de la machine de développement (Timon) refusait
   encore la page en `ERR_CERT_AUTHORITY_INVALID` alors que le téléphone
   l’ouvrait : le certificat était bon, mais l’autorité manquait dans les
   magasins de confiance locaux (148 certificats système, aucun Alfred).
-  `scripts/trust_local_authority.py` comble ce trou : magasin NSS de
-  l’utilisateur sans sudo (Chromium, Electron), magasin système avec sudo.
   Vérifié sur un magasin NSS de test (`certutil -L` liste l’autorité) et sur un
   pont HTTP local de repli servant le build `/pwa/` (page, fetch `/api/status`,
-  service worker et micro disponibles, 5 tests du script). L’installation
+  service worker et micro disponibles, 7 tests du script). L’installation
   effective sur la machine reste à exécuter hors du bac à sable (sudo et
   `~/.pki` refusés à la mission).
+  Conclusion du 27 novembre : la page s’ouvre **sans avertissement** dans le
+  navigateur intégré de Timon, micro disponible, sans aucune modification des
+  magasins de la machine (`/usr/local/share/ca-certificates` vide,
+  `~/.pki/nssdb/cert9.db` inchangé). Le mécanisme propre à Timon n’est pas
+  identifié : ni exception configurée, ni lecture du magasin NSS, et le
+  navigateur isolé de la mission refuse toujours la page. Ne pas généraliser ce
+  résultat à un autre navigateur : l’outil de confiance versionné reste le
+  moyen sûr d’y ouvrir Alfred. Vérifié le 27 novembre, phrase de l’utilisateur :
+  « oui elle s’ouvre ». **Dépend de : A11, T04.**
 
 - [x] **A34 — Créer le dépôt GitHub privé et vide d’Alfred.**
   Dépôt morrisdevstudio/Assistant_vocal créé le 23 novembre 2026.
