@@ -1675,10 +1675,13 @@ Autres points à traiter avant de figer l'architecture :
   réseau local affiche l’interface au lieu d’une page blanche, mais reste sans
   micro ni service worker, et le HTTPS demeure le mode de référence. Le
   service worker se met à jour automatiquement et recharge la page après
-  changement de contrôle. La présence d’un ESP32 ou d’un service actif n’a pas
-  été revérifiée après ces changements. Le redémarrage du service local reste à
-  faire : tant qu’il tourne, il sert l’ancien certificat auto-signé et la route
-  `/alfred-local-ca.crt` répond 404.
+  changement de contrôle. Le service local a été redémarré à 22:24 : il sert
+  maintenant le certificat signé par l’autorité locale et la route
+  `/alfred-local-ca.crt` répond 200, page `/pwa/` validée avec cette autorité.
+  Reste à importer l’autorité sur chaque appareil, puis à confirmer sur le
+  téléphone que la page s’ouvre sans avertissement et que le micro fonctionne.
+  La présence d’un ESP32 ou d’un service actif a été revérifiée après ce
+  changement : satellite reconnecté en veille, micro et détecteur sains.
 
 - 27 novembre 2026 : l’utilisateur demande de gérer l’option automatique, la
   recherche manuelle et la mise à jour forcée depuis Alfred. Implémentation

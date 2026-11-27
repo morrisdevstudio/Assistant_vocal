@@ -13,16 +13,20 @@
   pour ne plus servir un index dont les assets fingerprintés ont disparu.
   Vérifié : build TypeScript/Vite, 21 tests UI, suite Python complète
   (969 réussis, 2 ignorés) dont 6 tests PWA ; page rendue en HTTP local
-  sécurisé et en HTTP non sécurisé sur l’IP du LAN. Le certificat renouvelé est
-  accepté par `openssl verify` contre `ui-ca.crt`, mais le processus en cours
-  sert encore l’ancien certificat auto-signé et répond 404 sur la route.
-  Reste : redémarrer le service Alfred pour charger le nouveau certificat et la
-  route, puis importer `alfred-local-ca.crt` sur chaque appareil. Le redémarrage
-  doit être lancé hors du bac à sable de la mission, qui ne peut joindre ni le
-  bus systemd utilisateur ni le processus Alfred (`NoNewPrivs`, capacités vides) :
-  `systemctl --user restart alfred-dev.service`, puis vérifier que le certificat
-  servi annonce `issuer=CN=Alfred UI - Autorite locale` et que
-  `/alfred-local-ca.crt` répond 200.
+  sécurisé et en HTTP non sécurisé sur l’IP du LAN. Le service a été redémarré
+  le 27 novembre à 22:24 (nouveau processus) et sert désormais le certificat
+  signé : `subject=CN=Alfred LAN`, `issuer=CN=Alfred UI - Autorite locale`,
+  valable jusqu’au 27 novembre 2027. `/alfred-local-ca.crt` répond 200 en
+  `application/x-x509-ca-cert`, identique à `ui-ca.crt`. Relu avec cette
+  autorité seule (sans `-k`) : `/health` 200, `/pwa/` 200, index et
+  `assets/index-*.js`/`.css`, `manifest.webmanifest` et `sw.js` 200. `/pwa/`
+  refusé sans l’autorité importée (auto-signé vu d’un client qui ne la connaît
+  pas). Satellite reconnecté en veille, micro et détecteur sains ; STT/TTS
+  disponibles ; catalogue Home Assistant relu depuis le catalogue réel
+  (43 entités, mêmes pièces).
+  Reste : importer `alfred-local-ca.crt` une fois sur chaque appareil, puis
+  confirmer sur le téléphone que la page s’ouvre sans avertissement et que le
+  micro fonctionne (vérification Chromium faite côté serveur uniquement).
 
 - [x] **A34 — Créer le dépôt GitHub privé et vide d’Alfred.**
   Dépôt morrisdevstudio/Assistant_vocal créé le 23 novembre 2026.
