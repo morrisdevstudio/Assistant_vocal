@@ -17,7 +17,12 @@
   accepté par `openssl verify` contre `ui-ca.crt`, mais le processus en cours
   sert encore l’ancien certificat auto-signé et répond 404 sur la route.
   Reste : redémarrer le service Alfred pour charger le nouveau certificat et la
-  route, puis importer `alfred-local-ca.crt` sur chaque appareil.
+  route, puis importer `alfred-local-ca.crt` sur chaque appareil. Le redémarrage
+  doit être lancé hors du bac à sable de la mission, qui ne peut joindre ni le
+  bus systemd utilisateur ni le processus Alfred (`NoNewPrivs`, capacités vides) :
+  `systemctl --user restart alfred-dev.service`, puis vérifier que le certificat
+  servi annonce `issuer=CN=Alfred UI - Autorite locale` et que
+  `/alfred-local-ca.crt` répond 200.
 
 - [x] **A34 — Créer le dépôt GitHub privé et vide d’Alfred.**
   Dépôt morrisdevstudio/Assistant_vocal créé le 23 novembre 2026.
