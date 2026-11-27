@@ -1682,6 +1682,11 @@ Autres points à traiter avant de figer l'architecture :
   téléphone que la page s’ouvre sans avertissement et que le micro fonctionne.
   La présence d’un ESP32 ou d’un service actif a été revérifiée après ce
   changement : satellite reconnecté en veille, micro et détecteur sains.
+  Le 27 novembre, un navigateur de la machine de développement refusait encore
+  la page : le certificat est valide, mais l’autorité manque dans les magasins
+  de confiance locaux. `scripts/trust_local_authority.py` l’ajoute au magasin
+  NSS de l’utilisateur (Chromium, Electron) et, avec sudo, au magasin système ;
+  un navigateur doit être fermé puis rouvert pour relire ces magasins.
 
 - 27 novembre 2026 : l’utilisateur demande de gérer l’option automatique, la
   recherche manuelle et la mise à jour forcée depuis Alfred. Implémentation

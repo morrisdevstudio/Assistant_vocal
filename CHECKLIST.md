@@ -27,6 +27,17 @@
   Reste : importer `alfred-local-ca.crt` une fois sur chaque appareil, puis
   confirmer sur le téléphone que la page s’ouvre sans avertissement et que le
   micro fonctionne (vérification Chromium faite côté serveur uniquement).
+  27 novembre, un navigateur de la machine de développement (Timon) refusait
+  encore la page en `ERR_CERT_AUTHORITY_INVALID` alors que le téléphone
+  l’ouvrait : le certificat était bon, mais l’autorité manquait dans les
+  magasins de confiance locaux (148 certificats système, aucun Alfred).
+  `scripts/trust_local_authority.py` comble ce trou : magasin NSS de
+  l’utilisateur sans sudo (Chromium, Electron), magasin système avec sudo.
+  Vérifié sur un magasin NSS de test (`certutil -L` liste l’autorité) et sur un
+  pont HTTP local de repli servant le build `/pwa/` (page, fetch `/api/status`,
+  service worker et micro disponibles, 5 tests du script). L’installation
+  effective sur la machine reste à exécuter hors du bac à sable (sudo et
+  `~/.pki` refusés à la mission).
 
 - [x] **A34 — Créer le dépôt GitHub privé et vide d’Alfred.**
   Dépôt morrisdevstudio/Assistant_vocal créé le 23 novembre 2026.

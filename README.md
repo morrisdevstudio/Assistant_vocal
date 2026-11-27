@@ -597,6 +597,20 @@ L'autorité publique est ensuite servie sur `/alfred-local-ca.crt` : à importer
 une fois par appareil (« Installer un certificat » → « Certificat CA » sur
 Android). Redémarrer Alfred après avoir renouvelé le certificat.
 
+Un navigateur installé sur la machine d'Alfred doit aussi connaître cette
+autorité, sinon il refuse la page (`ERR_CERT_AUTHORITY_INVALID`) alors que le
+téléphone l'ouvre. Sans sudo, l'ajouter au magasin NSS de l'utilisateur suffit
+pour Chromium et les navigateurs Electron (Timon, VS Code) :
+
+```bash
+.venv/bin/python scripts/trust_local_authority.py --no-system
+```
+
+Sans l'option, le script ajoute aussi l'autorité au magasin système
+(`update-ca-certificates`, sudo), ce qui couvre `curl`, Python et les autres
+clients. Fermer et rouvrir le navigateur ensuite : un magasin de confiance est
+lu au lancement.
+
 ## Configuration et données
 
 - Variable optionnelle `ALFRED_DATA_DIR` : dossier des données, par défaut

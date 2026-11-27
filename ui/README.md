@@ -133,6 +133,10 @@ Fermer et rouvrir Chrome après l’ajout du certificat.
 
 Le certificat d’Alfred doit être signé par cette autorité, pas seulement le
 certificat de développement de Vite : voir `README.md`, section HTTPS.
+`scripts/trust_local_authority.py` ajoute cette autorité aux magasins de la
+machine d’Alfred (NSS sans sudo pour Chromium et Electron, magasin système avec
+sudo) ; sans cela un navigateur local refuse `https://<IP>:8765/pwa/` alors que
+les appareils qui ont importé `alfred-local-ca.crt` l’ouvrent.
 
 Le script `scripts/setup_ui_https.py` prépare l’autorité et le certificat UI sans
 écraser les fichiers existants ; il copie seulement le certificat public dans
