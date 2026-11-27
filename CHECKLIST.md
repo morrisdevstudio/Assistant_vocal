@@ -2487,6 +2487,10 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   transcrit et Phonon synthétise après reconstruction locale de `ptts` 0.7.0
   (le wheel officiel exige AVX). Le terminal ESP32 est hors ligne et les trois
   secrets DPAPI restent à ressaisir.
+  Bascule du 27 novembre : instance Windows arrêtée, SQLite finale copiée et
+  `integrity_check` ok. Recette Linux : 963 tests Python réussis, 2 ignorés,
+  48 tests JavaScript et 18 tests UI réussis ; interface HTTPS 200, STT 2,2 s,
+  TTS 1,24 s pour une phrase courte. Secrets et terminal restent à raccorder.
 - [ ] **A03 — Prévoir et vérifier sauvegarde/restauration.** Configuration, mémoires,
   profils et échéances ; procédure de mise à jour/retour arrière. Essai de restauration
   distinct de la production. **Dépend de : A02, I04, F06, F07.**
@@ -2505,6 +2509,8 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   de restauration réelle et copie hors de la VM restent ouverts.
   27 novembre, archive de pré-migration créée et vérifiée par SHA-256 ; la
   restauration réelle et la copie hors de la VM restent à faire.
+  Archive `alfred-state-20261127.tar.gz` SHA-256 `4DED5A23…` ; bundle Git
+  `Assistant_vocal-9fd1670.bundle` SHA-256 `12AEE568…`.
 - [ ] **A04 — Recette bureau puis salon.** Scénarios familiaux, français naturel,
   musique, profils et confidentialité, pannes réseau/services, redémarrage, quota et
   latence ; consigner résultats et écarts. **Dépend de : P05, A01, A02, A03, F09, F02,
