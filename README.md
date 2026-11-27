@@ -18,6 +18,13 @@ Music Assistant reste disponible ; le lecteur de test ESP32 a été désélectio
 les rappels actifs sont
 stockés dans les calendriers Home Assistant ; l'ancien banc local reste suspendu.
 
+## Installer sur Debian
+
+Le [paquet Debian alfred-home](deploy/debian/README.md) s’installe avec
+`sudo apt install alfred-home` après ajout du dépôt signé. Il démarre Alfred
+avec `systemd`, permet de promouvoir le même paquet du dev vers la prod et
+sauvegarde les données avant une mise à jour.
+
 ## Démarrer sur Windows
 
 **Transcription retenue le 9 novembre : stack Murmure 1.11.3 autonome**, Parakeet

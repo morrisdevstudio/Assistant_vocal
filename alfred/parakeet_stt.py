@@ -25,7 +25,9 @@ class ParakeetSTT:
     def __init__(self, models: Path, config: Path):
         self.models = models
         self.config = config
-        self.binary = models.parent.parent / "bin" / ("alfred-murmure-stt.exe" if os.name == "nt" else "alfred-murmure-stt")
+        binary_name = "alfred-murmure-stt.exe" if os.name == "nt" else "alfred-murmure-stt"
+        default_binary = models.parent.parent / "bin" / binary_name
+        self.binary = Path(os.environ.get("ALFRED_PARAKEET_BIN") or default_binary)
         self._process = None
         self._responses = None
         self._reader = None
