@@ -13,6 +13,9 @@ from fastapi.responses import FileResponse
 
 PREFIX = "/pwa"
 INDEX = "index.html"
+# Nom sous lequel la PWA propose de télécharger l'autorité locale, pour
+# l'installer une fois par appareil (Android : « Installer un certificat »).
+CA_NAME = "alfred-local-ca.crt"
 # Ressources fingerprintées par Vite : leur contenu ne change jamais sans nom neuf.
 IMMUTABLE_PREFIX = "assets/"
 
@@ -78,3 +81,24 @@ def install_pwa_routes(app: FastAPI, directory: Path | None = None) -> Path | No
         return send(INDEX, False)
 
     return root
+
+
+def install_ca_route(app: FastAPI, certificate: Path | None) -> Path | None:
+    """Sert l'autorité locale pour que les appareils puissent la télécharger.
+
+    L'aide d'installation de la PWA pointe sur `/alfred-local-ca.crt` : sans
+    cette route, le lien répond 404 et l'appareil ne peut pas faire confiance
+    au certificat HTTPS d'Alfred.
+    """
+    if certificate is None:
+        return None
+    source = Path(certificate)
+    if not source.is_file():
+        return None
+
+    @app.get("/" + CA_NAME, include_in_schema=False)
+    def local_authority():
+        return FileResponse(source, media_type="application/x-x509-ca-cert",
+                            filename=CA_NAME, headers={"Cache-Control": "no-store"})
+
+    return source

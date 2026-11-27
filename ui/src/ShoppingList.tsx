@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { Check, ChevronDown, Pencil, Plus, ShoppingBasket, Trash2, Undo2, X } from 'lucide-react'
 import { SHOPPING_KEY } from './local-data'
 import { backendJson, jsonPost, useRemote, useServerAction } from './backend'
+import { newId } from './ids'
 
 type Item = { id: string; name: string; checked: boolean }
 
@@ -74,7 +75,7 @@ export function ShoppingList({ active, shared, onModeChange }: {
       return
     }
     const existing = items.find(item => item.name.toLocaleLowerCase('fr') === name.toLocaleLowerCase('fr'))
-    const next = existing ? items.map(item => item.id === existing.id ? { ...item, checked: false } : item) : [...items, { id: crypto.randomUUID(), name, checked: false }]
+    const next = existing ? items.map(item => item.id === existing.id ? { ...item, checked: false } : item) : [...items, { id: newId(), name, checked: false }]
     if (save(next)) {
       setDraft('')
       setNotice(existing ? (existing.checked ? `${name} remis dans les courses.` : `${name} est déjà dans la liste.`) : `${name} ajouté.`)

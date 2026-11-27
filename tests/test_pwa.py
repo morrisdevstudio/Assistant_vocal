@@ -75,3 +75,21 @@ def test_missing_pwa_leaves_the_test_bench_working(tmp_path):
         assert client.get("/pwa/").status_code == 404
         assert client.get("/").status_code == 200
         assert client.get("/api/status").status_code == 200
+
+
+def test_local_authority_is_served_for_device_install(tmp_path):
+    """L'aide d'installation renvoie sur /alfred-local-ca.crt : la route existe."""
+    authority = tmp_path / "https" / "ui-ca.crt"
+    authority.parent.mkdir()
+    authority.write_bytes(b"-----BEGIN CERTIFICATE-----\nautorite\n-----END CERTIFICATE-----\n")
+    with TestClient(make_client(tmp_path / "data")) as client:
+        response = client.get("/alfred-local-ca.crt")
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("application/x-x509-ca-cert")
+        assert response.headers["cache-control"] == "no-store"
+        assert response.content == authority.read_bytes()
+
+
+def test_missing_local_authority_stays_absent(tmp_path):
+    with TestClient(make_client(tmp_path / "data")) as client:
+        assert client.get("/alfred-local-ca.crt").status_code == 404

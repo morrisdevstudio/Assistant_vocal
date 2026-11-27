@@ -250,6 +250,8 @@ ALFRED_TLS=--https
 
 Adapter l’IP. Si le certificat est signé par une autorité privée, indiquer en
 plus son fichier public avec `ALFRED_TLS_CA` pour le contrôle de démarrage.
+Cette même autorité, placée sous `/var/lib/alfred/https/ui-ca.crt`, est servie
+par Alfred sur `/alfred-local-ca.crt` pour l’installer une fois par appareil.
 Redémarrer le service et garder l’accès sur le LAN ou le VPN. La protection de
 l’accès familial reste à valider avant l’ouverture.
 

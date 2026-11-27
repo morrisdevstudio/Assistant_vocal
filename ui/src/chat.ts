@@ -7,6 +7,7 @@ import { backendJson, backendRequest, errorText, jsonPost } from './backend'
 import { loadHouse } from './house-model'
 import type { Preferences } from './preferences'
 import { useReplyAudio } from './reply-audio'
+import { newId } from './ids'
 
 export type ChatMessage = { id: string; author: 'user' | 'assistant'; text: string; sources?: Source[]; audio?: Blob }
 type Source = { url: string; title: string }
@@ -109,7 +110,7 @@ export function useChat(active: boolean, preferences: Preferences) {
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
   const { playback, play, pause, stop } = useReplyAudio(preferences.speechRate)
   const [webOverride, setWebOverride] = useState(false)
-  const [session] = useState(() => ({ id: crypto.randomUUID() }))
+  const [session] = useState(() => ({ id: newId() }))
   const turn = useRef<Turn | null>(null)
   const visible = useRef(active)
   visible.current = active
@@ -151,8 +152,8 @@ export function useChat(active: boolean, preferences: Preferences) {
     setMicrophoneDenied(false)
     stop()
     setPhase(input ? 'waiting' : 'permission')
-    const user = crypto.randomUUID()
-    const assistant = crypto.randomUUID()
+    const user = newId()
+    const assistant = newId()
     const signal = current.controller.signal
     const floor = browserFloor()
     const allowInternet = preferences.webSearch === 'when-needed' || (deadline === undefined && webOverride)
@@ -249,7 +250,7 @@ export function useChat(active: boolean, preferences: Preferences) {
     setError('')
     setMicrophoneDenied(false)
     const previous = session.id
-    session.id = crypto.randomUUID()
+    session.id = newId()
     const current = session.id
     try { await backendJson('conversation/reset', jsonPost({ session_id: previous })) }
     catch {

@@ -584,6 +584,19 @@ Pour HTTPS, placer `server.crt` et `server.key` sous `.local/https`, puis relanc
 avec `--https`. Le certificat doit couvrir l'adresse utilisée. La clé reste
 locale. Ce mode de développement ne comporte pas d'authentification applicative.
 
+Le certificat doit être signé par l'autorité locale du projet, sinon chaque
+appareil affiche un avertissement ou refuse la page. Sur la machine de
+développement, après `scripts/setup_ui_https.py --host <IP>` :
+
+```bash
+.venv/bin/python scripts/renew_dev_certificate.py --directory .local/https \
+  --address <IP> --ca-cert .local/https/ui-ca.crt --ca-key .local/https/ui-ca.key
+```
+
+L'autorité publique est ensuite servie sur `/alfred-local-ca.crt` : à importer
+une fois par appareil (« Installer un certificat » → « Certificat CA » sur
+Android). Redémarrer Alfred après avoir renouvelé le certificat.
+
 ## Configuration et données
 
 - Variable optionnelle `ALFRED_DATA_DIR` : dossier des données, par défaut

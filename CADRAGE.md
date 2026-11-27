@@ -313,6 +313,13 @@ les mises à jour. L’UI utilise désormais un certificat dédié signé par un
 locale sous `.local/https/`, sans modifier celui du backend ni installer de confiance
 système. L’autorité publique est téléchargeable pour installation manuelle sur
 Android ; cette confiance est nécessaire si Chrome refuse le certificat privé.
+Depuis le 27 novembre, ce certificat UI signé par l’autorité locale n’est plus
+le seul servi : la PWA est montée sur Alfred sous `/pwa/` et le serveur n’utilise
+que `server.crt`, désormais signé par la même autorité, avec l’autorité servie
+sur `/alfred-local-ca.crt`. Une nouvelle autorité locale créée par
+`scripts/setup_ui_https.py` doit donc aussi servir à signer `server.crt`
+(`scripts/renew_dev_certificate.py --ca-cert … --ca-key …`), sinon les appareils
+qui ont déjà importé l’ancienne autorité refusent à nouveau le certificat.
 L’installation et le lancement sans barre navigateur sont confirmés par
 l’utilisateur le 17 novembre après les indications de confiance du certificat.
 Retour Android : l’utilisateur exige un lancement sans barre d’adresse ni menu
@@ -1658,6 +1665,20 @@ Autres points à traiter avant de figer l'architecture :
   <https://github.com/jyoushiki/esphome-waveshare-esp32-s3-audio-va/blob/v2.0.0/waveshare-va.yaml>.
 
 ## Journal des décisions
+
+- 27 novembre 2026 : le HTTPS d’Alfred redevient utilisable par les appareils.
+  Le certificat `server.crt` est signé par l’autorité locale du projet au lieu
+  de s’auto-signer, et `/alfred-local-ca.crt` sert publiquement cette autorité
+  à installer une fois par appareil (le lien était promis par l’aide
+  d’installation mais répondait 404). La PWA démarre aussi sans
+  `crypto.randomUUID`, absent d’un contexte non sécurisé : un accès HTTP du
+  réseau local affiche l’interface au lieu d’une page blanche, mais reste sans
+  micro ni service worker, et le HTTPS demeure le mode de référence. Le
+  service worker se met à jour automatiquement et recharge la page après
+  changement de contrôle. La présence d’un ESP32 ou d’un service actif n’a pas
+  été revérifiée après ces changements. Le redémarrage du service local reste à
+  faire : tant qu’il tourne, il sert l’ancien certificat auto-signé et la route
+  `/alfred-local-ca.crt` répond 404.
 
 - 27 novembre 2026 : l’utilisateur demande de gérer l’option automatique, la
   recherche manuelle et la mise à jour forcée depuis Alfred. Implémentation

@@ -131,6 +131,9 @@ Les clés privées restent dans `.local/https/`, dont les ACL sont limitées à
 l’utilisateur Windows et SYSTEM. Aucune confiance système n’est installée par le script.
 Fermer et rouvrir Chrome après l’ajout du certificat.
 
+Le certificat d’Alfred doit être signé par cette autorité, pas seulement le
+certificat de développement de Vite : voir `README.md`, section HTTPS.
+
 Le script `scripts/setup_ui_https.py` prépare l’autorité et le certificat UI sans
 écraser les fichiers existants ; il copie seulement le certificat public dans
 `ui/public/` (copie ignorée par Git). Les icônes sont reproductibles avec

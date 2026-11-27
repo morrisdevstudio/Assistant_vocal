@@ -2023,6 +2023,9 @@ def create_app(settings: Settings | None = None, voice_service=None, conversatio
     served = pwa.install_pwa_routes(app, settings.pwa_dir)
     if served:
         logger.info("PWA servie sur %s depuis %s", pwa.PREFIX, served)
+    authority = pwa.install_ca_route(app, settings.data_dir.parent / "https" / "ui-ca.crt")
+    if authority:
+        logger.info("Autorité locale servie sur /%s depuis %s", pwa.CA_NAME, authority)
     install_wake_routes(app)
     install_room_capture_routes(app)
     app.mount("/static", StaticFiles(directory=STATIC), name="static")

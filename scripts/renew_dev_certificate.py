@@ -16,9 +16,16 @@ def main():
     parser.add_argument("--directory", type=Path, required=True)
     parser.add_argument("--address", type=ipaddress.IPv4Address, required=True)
     parser.add_argument("--days", type=int, default=365)
+    parser.add_argument("--ca-cert", type=Path,
+                        help="autorité locale (ui-ca.crt) qui signe le certificat ; "
+                             "sans elle, le certificat reste auto-signé")
+    parser.add_argument("--ca-key", type=Path,
+                        help="clé privée de cette autorité (ui-ca.key)")
     args = parser.parse_args()
     if not 7 <= args.days <= 825:
         parser.error("--days doit être compris entre sept et huit cent vingt-cinq")
+    if (args.ca_cert is None) != (args.ca_key is None):
+        parser.error("--ca-cert et --ca-key vont ensemble")
     folder = args.directory.resolve()
     folder.mkdir(parents=True, exist_ok=True)
     certificate_path, key_path = folder / "server.crt", folder / "server.key"
@@ -27,8 +34,18 @@ def main():
     now = dt.datetime.now(dt.timezone.utc)
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Alfred LAN")])
-    certificate = (x509.CertificateBuilder()
-        .subject_name(name).issuer_name(name)
+    # Sans autorité, le certificat s'auto-signe ; avec, l'appareil qui a
+    # importé ui-ca.crt valide Alfred sans nouvel avertissement.
+    signer, issuer = key, name
+    authority_key_identifier = None
+    if args.ca_cert:
+        authority = x509.load_pem_x509_certificate(args.ca_cert.read_bytes())
+        signer = serialization.load_pem_private_key(args.ca_key.read_bytes(), password=None)
+        issuer = authority.subject
+        authority_key_identifier = x509.AuthorityKeyIdentifier.from_issuer_public_key(
+            signer.public_key())
+    builder = (x509.CertificateBuilder()
+        .subject_name(name).issuer_name(issuer)
         .public_key(key.public_key()).serial_number(x509.random_serial_number())
         .not_valid_before(now - dt.timedelta(minutes=5))
         .not_valid_after(now + dt.timedelta(days=args.days))
@@ -37,8 +54,11 @@ def main():
             x509.IPAddress(ipaddress.ip_address("127.0.0.1")),
             x509.IPAddress(args.address)]), critical=False)
         .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
-        .add_extension(x509.ExtendedKeyUsage([ExtendedKeyUsageOID.SERVER_AUTH]), critical=False)
-        .sign(key, hashes.SHA256()))
+        .add_extension(x509.ExtendedKeyUsage([ExtendedKeyUsageOID.SERVER_AUTH]), critical=False))
+    if authority_key_identifier is not None:
+        builder = builder.add_extension(authority_key_identifier, critical=False)
+    certificate = builder.sign(signer, hashes.SHA256())
+
     key_temp.write_bytes(key.private_bytes(
         serialization.Encoding.PEM, serialization.PrivateFormat.TraditionalOpenSSL,
         serialization.NoEncryption()))

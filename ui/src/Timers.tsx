@@ -8,6 +8,7 @@ import type { TimerTone } from './preferences'
 import { playTimerTone } from './timer-sound'
 import { TIMERS_KEY } from './local-data'
 import { ScheduleScope } from './ScheduleScope'
+import { newId } from './ids'
 
 export function Timers({ active, tone, openShared }: { active: boolean; tone: TimerTone; openShared: () => void }) {
   const { items, update, current, error, blocked } = useLocalCollection(TIMERS_KEY, isTimer)
@@ -62,7 +63,7 @@ export function Timers({ active, tone, openShared }: { active: boolean; tone: Ti
     const durationMs = (values[0] * 3600 + values[1] * 60 + values[2]) * 1000
     if (!durationMs) { setNotice('Choisissez une durée supérieure à zéro.'); return }
     const now = Date.now()
-    const timer: LocalTimer = { id: crypto.randomUUID(), title: title.trim() || 'Minuteur', durationMs, remainingMs: durationMs, endsAt: now + durationMs, finished: false }
+    const timer: LocalTimer = { id: newId(), title: title.trim() || 'Minuteur', durationMs, remainingMs: durationMs, endsAt: now + durationMs, finished: false }
     if (update(previous => [...previous, timer])) { setNow(now); setTitle(''); setNotice('Minuterie démarrée.') }
   }
 

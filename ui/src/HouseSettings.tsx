@@ -6,6 +6,7 @@ import type { Floor, HomeFloor, HomeRoomRegistry, HouseConfiguration, Room, Sate
 import { useRemote } from './backend'
 import type { TerminalStatus } from './backend'
 import { HomeDeviceTable } from './HomeDeviceTable'
+import { newId } from './ids'
 
 type Removed = { kind: 'room'; item: Room } | { kind: 'satellite'; item: Satellite }
 type ListedRoom = { name: string; local: Room | null; haName?: string }
@@ -76,7 +77,7 @@ export function HouseSettings() {
     if (!name || !floor) return
     const id = editRoom?.id
     if (config.rooms.some(room => room.id !== id && roomKey(room.name) === roomKey(name) && room.floor === floor)) { setError('Cette pièce existe déjà à cet étage.'); return }
-    const value: Room = { id: id || crypto.randomUUID(), name, floor }
+    const value: Room = { id: id || newId(), name, floor }
     if (editRoom?.haName) value.haName = editRoom.haName
     const nextRooms = id ? config.rooms.map(room => room.id === id ? value : room) : [...config.rooms, value]
     if (save({ ...config, rooms: nextRooms }, editRoom ? 'Pièce modifiée dans Alfred.' : 'Pièce ajoutée.')) resetRoomForm()
@@ -107,7 +108,7 @@ export function HouseSettings() {
     const name = deviceName.trim()
     if (!name || !deviceRoom) return
     if (config.satellites.some(device => device.id !== editDevice && device.name.toLocaleLowerCase('fr') === name.toLocaleLowerCase('fr'))) { setError('Un satellite porte déjà ce nom.'); return }
-    const value: Satellite = { id: editDevice || crypto.randomUUID(), name, roomId: deviceRoom }
+    const value: Satellite = { id: editDevice || newId(), name, roomId: deviceRoom }
     if (save({ ...config, satellites: editDevice ? config.satellites.map(device => device.id === editDevice ? value : device) : [...config.satellites, value] }, editDevice ? 'Affectation modifiée.' : 'Satellite ajouté au répertoire local.')) resetDevice()
   }
 

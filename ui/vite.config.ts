@@ -68,7 +68,9 @@ export default defineConfig(({ command, isPreview, mode }) => {
         })
       },
     }, react(), VitePWA({
-      registerType: 'prompt',
+      // Mise à jour automatique : un nouveau shell prend la main et la page
+      // recharge, au lieu de rester sur un index dont les assets ont disparu.
+      registerType: 'autoUpdate',
       injectRegister: false,
       manifest: {
         id: base,

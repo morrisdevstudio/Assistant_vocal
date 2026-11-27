@@ -2,6 +2,7 @@
 import argparse
 import datetime as dt
 import ipaddress
+import os
 from pathlib import Path
 
 from cryptography import x509
@@ -36,6 +37,7 @@ def main():
               .add_extension(x509.SubjectKeyIdentifier.from_public_key(ca_key.public_key()), critical=False)
               .sign(ca_key, hashes.SHA256()))
         ca_key_path.write_bytes(ca_key.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8, serialization.NoEncryption()))
+        os.chmod(ca_key_path, 0o600)
         ca_path.write_bytes(ca.public_bytes(serialization.Encoding.PEM))
     else:
         ca = x509.load_pem_x509_certificate(ca_path.read_bytes())
@@ -58,6 +60,7 @@ def main():
                 .add_extension(x509.AuthorityKeyIdentifier.from_issuer_public_key(ca_key.public_key()), critical=False)
                 .sign(ca_key, hashes.SHA256()))
         key_path.write_bytes(key.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8, serialization.NoEncryption()))
+        os.chmod(key_path, 0o600)
         cert_path.write_bytes(cert.public_bytes(serialization.Encoding.PEM))
 
     public_path = root / 'ui' / 'public' / 'alfred-local-ca.crt'

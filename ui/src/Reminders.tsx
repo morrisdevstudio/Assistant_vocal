@@ -6,6 +6,7 @@ import type { Reminder } from './schedule-model'
 import { useLocalCollection } from './useLocalCollection'
 import { REMINDERS_KEY } from './local-data'
 import { ScheduleScope } from './ScheduleScope'
+import { newId } from './ids'
 
 export function Reminders({ active, openShared }: { active: boolean; openShared: () => void }) {
   const { items, update, error, blocked } = useLocalCollection(REMINDERS_KEY, isReminder)
@@ -33,7 +34,7 @@ export function Reminders({ active, openShared }: { active: boolean; openShared:
     event.preventDefault()
     const dueAt = new Date(`${date}T${time}`).getTime()
     if (!title.trim() || !Number.isFinite(dueAt) || dueAt <= Date.now()) { setNotice('Choisissez un titre et une date à venir.'); return }
-    const id = editing || crypto.randomUUID()
+    const id = editing || newId()
     const value: Reminder = { id, title: title.trim(), dueAt, done: false }
     if (update(previous => editing ? previous.map(item => item.id === id ? value : item) : [...previous, value])) { setNotice(editing ? 'Rappel modifié.' : 'Rappel enregistré sur cet appareil.'); reset() }
   }

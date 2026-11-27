@@ -16,6 +16,18 @@ registerSW({
   onRegisterError() { window.dispatchEvent(new Event('alfred-pwa-registration-error')) },
 })
 
+// Après une reconstruction, un nouveau service worker prend la main : recharger
+// une fois évite de garder un index dont les assets fingerprintés n'existent plus.
+if ('serviceWorker' in navigator) {
+  const hadController = !!navigator.serviceWorker.controller
+  let reloading = false
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloading) return
+    reloading = true
+    location.reload()
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode><App /></StrictMode>,
 )

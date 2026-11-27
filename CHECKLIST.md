@@ -1,5 +1,24 @@
 ﻿# Alfred — checklist de mise en place
 
+- [ ] **A36 — Rendre le HTTPS d’Alfred utilisable par les appareils.**
+  Page blanche constatée sur `https://<IP>:8765/pwa/` : le navigateur refuse
+  `server.crt`, auto-signé depuis le passage de la PWA sous `/pwa/`. Le
+  certificat est désormais signé par l’autorité locale (`--ca-cert` et
+  `--ca-key` ajoutés à `scripts/renew_dev_certificate.py`) et la route
+  `/alfred-local-ca.crt` sert cette autorité, comme l’aide d’installation le
+  promettait déjà. L’interface ne dépend plus de `crypto.randomUUID` pour
+  démarrer (`ui/src/ids.ts`) : un accès HTTP du réseau local affiche l’écran au
+  lieu d’une page blanche, sans micro ni service worker. Le service worker
+  passe en mise à jour automatique, avec rechargement après prise de contrôle,
+  pour ne plus servir un index dont les assets fingerprintés ont disparu.
+  Vérifié : build TypeScript/Vite, 21 tests UI, suite Python complète
+  (969 réussis, 2 ignorés) dont 6 tests PWA ; page rendue en HTTP local
+  sécurisé et en HTTP non sécurisé sur l’IP du LAN. Le certificat renouvelé est
+  accepté par `openssl verify` contre `ui-ca.crt`, mais le processus en cours
+  sert encore l’ancien certificat auto-signé et répond 404 sur la route.
+  Reste : redémarrer le service Alfred pour charger le nouveau certificat et la
+  route, puis importer `alfred-local-ca.crt` sur chaque appareil.
+
 - [x] **A34 — Créer le dépôt GitHub privé et vide d’Alfred.**
   Dépôt morrisdevstudio/Assistant_vocal créé le 23 novembre 2026.
   Lecture des issues vérifiée, conservation par défaut de sept jours confirmée
