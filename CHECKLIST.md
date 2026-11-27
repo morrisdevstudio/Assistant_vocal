@@ -2490,7 +2490,8 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   Bascule du 27 novembre : instance Windows arrêtée, SQLite finale copiée et
   `integrity_check` ok. Recette Linux : 963 tests Python réussis, 2 ignorés,
   48 tests JavaScript et 18 tests UI réussis ; interface HTTPS 200, STT 2,2 s,
-  TTS 1,24 s pour une phrase courte. Secrets et terminal restent à raccorder.
+  TTS 1,24 s pour une phrase courte ; banc `/api/voice/turn` : STT 585 ms et
+  TTS 4,14 s pour la réponse de test. Secrets et terminal restent à raccorder.
 - [ ] **A03 — Prévoir et vérifier sauvegarde/restauration.** Configuration, mémoires,
   profils et échéances ; procédure de mise à jour/retour arrière. Essai de restauration
   distinct de la production. **Dépend de : A02, I04, F06, F07.**
@@ -2511,6 +2512,8 @@ les règles HA de ces entités encore à vérifier. F01 reste ouvert.
   restauration réelle et la copie hors de la VM restent à faire.
   Archive `alfred-state-20261127.tar.gz` SHA-256 `4DED5A23…` ; bundle Git
   `Assistant_vocal-9fd1670.bundle` SHA-256 `12AEE568…`.
+  Instance Windows arrêtée et tâche `Alfred Assistant Vocal` désactivée ; pour
+  revenir, réactiver la tâche et remettre `media_host` à `192.168.1.23`.
 - [ ] **A04 — Recette bureau puis salon.** Scénarios familiaux, français naturel,
   musique, profils et confidentialité, pannes réseau/services, redémarrage, quota et
   latence ; consigner résultats et écarts. **Dépend de : P05, A01, A02, A03, F09, F02,
