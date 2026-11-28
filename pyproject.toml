@@ -1,6 +1,6 @@
 [project]
 name = "alfred-home"
-version = "0.6.0"
+version = "0.6.1"
 description = "Socle local de l'assistant Alfred"
 requires-python = ">=3.12"
 dependencies = ["fastapi==0.162.0", "uvicorn==0.54.0", "httpx==0.28.1", "tzdata==2026.4", "websockets==17.3"]
