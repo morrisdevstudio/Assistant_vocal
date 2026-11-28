@@ -2805,3 +2805,28 @@ S12 terminé côté logiciel ; prochain essai utilisateur : enchaîner deux dema
 calme, laisser expirer huit secondes, puis tester « Arrêter la conversation ».
 Les règles encore ouvertes restent en P01/P02. Cette liste ne déclenche pas à elle
 seule les installations ou modifications des services existants.
+
+Migration vers la VM Debian `alfred` (192.168.1.72) terminée le 28 novembre 2026 :
+paquet `alfred-home` v0.6.0 actif (`alfred-home.service`, HTTPS sur 192.168.1.72:8765,
+certificat signé par l’autorité locale jusqu’au 27 novembre 2027). Données, modèles,
+profils Phonon, jeton Home Assistant et réglages ESP32 transférés depuis `.local`,
+avec chemins adaptés au paquet ; détails et pièges dans le journal des décisions de
+`CADRAGE.md`. Validation utilisateur : commandes de lumières nettement plus rapides
+que l’ancienne instance Windows. L’instance de développement locale
+(`alfred-dev.service`, 192.168.1.71) est volontairement arrêtée ; la relancer avec
+`systemctl --user start alfred-dev.service` la remet en conflit avec la carte ESP32
+(une seule connexion ESPHome possible). Restent ouverts pour l’instance de la VM :
+le mot d’appel ONNX personnalisé (l’édition Debian utilise le réveil Parakeet
+« Alfred »), les permissions par profil, les exclusions de lampes et la recette
+multi-pièces.
+
+Publication v0.6.1-1 terminée le 28 novembre 2026 (tag `v0.6.1`, release
+GitHub Latest, source APT vérifiée depuis l’URL stable). La VM `alfred`
+tourne en 0.6.1-1 avec `/pwa/` et `/alfred-local-ca.crt` actifs. Détails et
+pièges dans le journal des décisions de `CADRAGE.md` : build natif sans
+Docker, signature APT sur la VM puis effacement de la clé privée,
+`NODE_ENV=production` bloquant `npm ci`, mise à jour réelle de la VM
+effectuée avant la promotion. Restent ouverts : remettre la source APT de la
+VM sur `latest/download`, fusionner `release/v0.6.1` dans `main`, importer
+l’autorité locale sur les appareils qui n’ont pas encore installé la PWA,
+et le mot d’appel ONNX personnalisé sur l’édition Debian.

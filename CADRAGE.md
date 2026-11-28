@@ -1666,6 +1666,51 @@ Autres points à traiter avant de figer l'architecture :
 
 ## Journal des décisions
 
+- 28 novembre 2026 (suite) : publication de la version 0.6.1-1 d’Alfred et mise
+  à jour de la VM. Contenu : PWA servie par Alfred sous `/pwa/`, HTTPS signé
+  par l’autorité locale avec `/alfred-local-ca.crt`, script d’installation de
+  l’autorité dans les magasins de confiance, calibration de pièce et panneau
+  de mises à jour. Tag `v0.6.1` sur le commit `24295ff` (branche
+  `release/v0.6.1`, bump de version `0.6.0` → `0.6.1`), tests 975 backend et
+  21 UI passés. Build réalisé **sans Docker** sur la machine de dev (Debian
+  13 natif) ; piège corrigé : `NODE_ENV=production` de la session faisait
+  sauter les devDependencies de `npm ci`. Signature APT effectuée sur la VM
+  (exécution de `github-release-assets.sh` avec la fonction `gpg` chargée de
+  `--passphrase-file`), puis clé privée et trousseau supprimés de la VM.
+  Préversion publiée, contrôlée par téléchargement SHA-256 depuis l’URL du
+  tag, mise à jour réelle de la VM depuis la source APT du tag (0.6.0-1 →
+  0.6.1-1, service et ESP32 sains, `/pwa/` et `/alfred-local-ca.crt` en 200),
+  puis promotion en **Latest** et vérification du candidat et des octets
+  depuis `releases/latest/download`. À faire : remettre la source APT de la
+  VM sur `latest/download` et fusionner `release/v0.6.1` dans `main` (le bump
+  de version n’est pas encore sur la branche par défaut). L’interface PWA de
+  la VM est désormais accessible sur `https://192.168.1.72:8765/pwa/` après
+  import de l’autorité locale.
+
+- 28 novembre 2026 : migration d’Alfred sur la VM Debian `alfred`
+  (192.168.1.72), paquet `alfred-home` v0.6.0. Décision validée : la VM est
+  l’instance principale, l’instance de développement de la machine de bureau
+  (`alfred-dev.service`, 192.168.1.71) est arrêtée et ne sert plus la carte.
+  Transfert effectué depuis `.local` : jeton Home Assistant longue durée,
+  catalogues et alias d’entités, réglages du terminal ESP32 (`media_host`
+  passé à 192.168.1.72), profils Phonon adaptés au venv du paquet
+  (`/opt/alfred/current/.venv`), modèles (Parakeet, Silero, Phonon,
+  speechbrain, wake-word) vers `/var/lib/alfred/models`, voix de référence et
+  certificats vers `/var/lib/alfred`. Le certificat de la VM est regénéré pour
+  l’IP 192.168.1.72, signé par l’autorité locale du projet, valable jusqu’au
+  27 novembre 2027 ; `ALFRED_HOST=192.168.1.72` et `ALFRED_TLS=--https` sont
+  posés dans `/etc/alfred/alfred.env`. Une clé SSH ed25519 dédiée est
+  autorisée pour le compte de service `alfred` (home `/var/lib/alfred`) pour
+  la maintenance. Validation utilisateur : boucle STT→commande→lampe nettement
+  plus rapide que l’ancienne instance Windows. Sur le paquet Debian, le mot
+  d’appel est le réveil Parakeet avec la phrase « Alfred » (moteur STT) ;
+  les modèles ONNX personnalisés (jarvisse, alfred-he) sont copiés mais non
+  chargés par cette édition. Pièges retenus : une seule instance Alfred peut
+  tenir la connexion ESPHome de la carte (port 6053) — deux clients bloquent
+  le flux micro (`micro_stalled`) ; l’instance locale écoute sur
+  192.168.1.71 et non 127.0.0.1, ce qui a fait croire à tort à son arrêt.
+  L’archive `secrets-20261127T184606Z.tar.gz` est vide : ne pas s’y fier.
+
 - 27 novembre 2026 : le HTTPS d’Alfred redevient utilisable par les appareils.
   Le certificat `server.crt` est signé par l’autorité locale du projet au lieu
   de s’auto-signer, et `/alfred-local-ca.crt` sert publiquement cette autorité
